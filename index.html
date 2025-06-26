@@ -1,10 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Test GitHub Page</title>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ben & Jerry's Tribe Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      background: white;
+      border-radius: 16px;
+      padding: 24px;
+      max-width: 1100px;
+      margin: auto;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+    .header {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .header img {
+      width: 80px;
+      border-radius: 12px;
+    }
+    .info {
+      flex-grow: 1;
+    }
+    .rating {
+      font-size: 1.3rem;
+      color: #e74c3c;
+    }
+    canvas {
+      margin-top: 30px;
+      max-width: 100%;
+    }
+    h2 {
+      margin-top: 40px;
+      font-size: 1.3rem;
+      color: #2d3436;
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, your GitHub Page is working!</h1>
-</body>
-</html>
+  <div class="container">
+    <div class="header">
+      <img src="https://www.benjerry.com/files/live/sites/systemsite/files/flavors/products/us/pint/chunky-monkey-detail.png" />
+      <div class="info">
+        <h1>Chunky Monkey 🍌🍫</h1>
+        <p>Banana Ice Cream with Fudge Chunks & Walnuts</p>
+        <div class="rating">4.3 ★ (15,647 reviews)</div>
+      </div>
+    </div>
+
+    <p><strong>Insight:</strong> Health-conscious parents and dessert lovers drive popularity — praising its clean labeling, indulgent texture, and organic edge. It balances flavor and trust like no other.</p>
+
+    <h2>Tribe Influence (Bar Chart)</h2>
+    <canvas id="barChart" height="250"></canvas>
+
+    <h2>Tribe Size Distribution (Donut Chart)</h2>
+    <canvas id="donutChart" height="250"></canvas>
+  </div>
+
+  <script>
+    const topTribes = [
+      { name: "Health-Conscious Parents", value: 89.2, size: 3420, color: "#6c5ce7" },
+      { name: "Dessert Enthusiasts", value: 85.7, size: 4890, color: "#00cec9" },
+      { name: "Budget Shoppers", value: 72.4, size: 2680, color: "#fdcb6e" },
+      { name: "Texture Lovers", value: 68.9, size: 1950, color: "#ff7675" },
+      { name: "Flavor Purists", value: 61.3, size: 1240, color: "#81ecec" }
+    ];
+
+    new Chart(document.getElementById('barChart'), {
+      type: 'bar',
+      data: {
+        labels: topTribes.map(t => t.name),
+        datasets: [{
+          label: 'Influence Score',
+          data: topTribes.map(t => t.value),
+          backgroundColor: topTribes.map(t => t.color)
+        }]
+      },
+      options: {
+        responsive: true
