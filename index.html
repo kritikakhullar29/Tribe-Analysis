@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Ben & Jerry's Tribe Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -28,8 +28,10 @@
       margin-bottom: 20px;
     }
     .header img {
-      width: 80px;
+      width: 100px;
+      height: 100px;
       border-radius: 12px;
+      object-fit: cover;
     }
     .info {
       flex-grow: 1;
@@ -52,7 +54,7 @@
 <body>
   <div class="container">
     <div class="header">
-      <img src="https://www.benjerry.com/files/live/sites/systemsite/files/flavors/products/us/pint/chunky-monkey-detail.png" />
+      <img src="https://www.benjerry.com/files/live/sites/systemsite/files/flavors/products/us/pint/chunky-monkey-detail.png" alt="Product Image" />
       <div class="info">
         <h1>Chunky Monkey 🍌🍫</h1>
         <p>Banana Ice Cream with Fudge Chunks & Walnuts</p>
@@ -60,7 +62,7 @@
       </div>
     </div>
 
-    <p><strong>Insight:</strong> Health-conscious parents and dessert lovers drive popularity — praising its clean labeling, indulgent texture, and organic edge. It balances flavor and trust like no other.</p>
+    <p><strong>Insight:</strong> Health-conscious parents and dessert lovers drive Chunky Monkey's popularity — praising its clean labeling, indulgent texture, and organic edge. It balances flavor and trust like no other.</p>
 
     <h2>Tribe Influence (Bar Chart)</h2>
     <canvas id="barChart" height="250"></canvas>
@@ -78,7 +80,10 @@
       { name: "Flavor Purists", value: 61.3, size: 1240, color: "#81ecec" }
     ];
 
-    new Chart(document.getElementById('barChart'), {
+    const ctxBar = document.getElementById('barChart');
+    const ctxDonut = document.getElementById('donutChart');
+
+    new Chart(ctxBar, {
       type: 'bar',
       data: {
         labels: topTribes.map(t => t.name),
@@ -89,4 +94,31 @@
         }]
       },
       options: {
-        responsive: true
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, max: 100 },
+          x: { ticks: { font: { size: 11 } } }
+        }
+      }
+    });
+
+    new Chart(ctxDonut, {
+      type: 'doughnut',
+      data: {
+        labels: topTribes.map(t => t.name),
+        datasets: [{
+          data: topTribes.map(t => t.size),
+          backgroundColor: topTribes.map(t => t.color)
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
