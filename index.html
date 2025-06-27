@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Consumer Tribe Analytics Dashboard</title>
+  <title>Lean Cuisine Consumer Insights Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"></script>
   <style>
     * {
@@ -13,516 +13,418 @@
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      min-height: 100vh;
-      padding: 20px;
-      color: #2c3e50;
+      font-family: Arial, sans-serif;
+      background: #e8e8e8;
+      color: #333;
+      line-height: 1.2;
     }
     
     .dashboard {
-      max-width: 1400px;
+      max-width: 1200px;
       margin: 0 auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto auto;
-      gap: 24px;
-      animation: fadeIn 0.8s ease-out;
+      padding: 0;
+      background: #e8e8e8;
     }
     
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    .card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 32px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .card::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #667eea, #764ba2);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-    
-    .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-    }
-    
-    .card:hover::before {
-      opacity: 1;
-    }
-    
-    .hero-card {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    .header-section {
+      background: #6b7280;
       color: white;
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      min-height: 200px;
+      padding: 15px 20px;
+      font-size: 18px;
+      font-weight: normal;
+      margin-bottom: 0;
     }
     
-    .hero-card::before {
-      display: none;
+    .main-layout {
+      display: flex;
+      background: #e8e8e8;
+      min-height: 500px;
+      padding: 20px 0;
+    }
+    
+    .left-section {
+      width: 280px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     
     .product-image {
-      width: 120px;
-      height: 120px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 48px;
-      backdrop-filter: blur(10px);
-    }
-    
-    .hero-content h1 {
-      font-size: 2.5rem;
-      font-weight: 700;
-      margin-bottom: 12px;
-      background: linear-gradient(45deg, #fff, #e3f2fd);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    
-    .hero-content p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      margin-bottom: 16px;
+      width: 240px;
+      height: 320px;
+      background: url('https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=300&h=400&fit=crop') center/cover;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
     
     .rating {
       display: flex;
       align-items: center;
-      gap: 12px;
-      font-size: 1.1rem;
+      gap: 8px;
+      margin-bottom: 15px;
     }
     
     .stars {
       color: #ffd700;
-      font-size: 1.3rem;
+      font-size: 18px;
     }
     
-    .insight-card {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-      color: white;
+    .rating-text {
+      color: #666;
+      font-size: 16px;
+    }
+    
+    .product-title {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: left;
+      color: #333;
+      width: 100%;
+    }
+    
+    .middle-section {
+      width: 400px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       position: relative;
     }
     
-    .insight-card h2 {
-      font-size: 1.8rem;
+    .donut-container {
+      width: 300px;
+      height: 300px;
+      position: relative;
       margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
     }
     
-    .insight-text {
-      font-size: 1.3rem;
-      line-height: 1.6;
-      font-weight: 300;
-      opacity: 0.95;
-    }
-    
-    .chart-card h3 {
-      font-size: 1.5rem;
-      margin-bottom: 24px;
-      color: #2c3e50;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    
-    .chart-container {
-      position: relative;
-      height: 350px;
-      cursor: pointer;
-    }
-    
-    .tribe-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
-    
-    .stat-item {
-      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-      padding: 20px;
-      border-radius: 12px;
+    .donut-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
       text-align: center;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
+      font-weight: bold;
+      color: #333;
+      z-index: 10;
     }
     
-    .stat-item:hover {
-      border-color: #667eea;
-      transform: scale(1.05);
+    .donut-title {
+      font-size: 16px;
+      margin-bottom: 2px;
     }
     
-    .stat-value {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #667eea;
-      display: block;
+    .donut-subtitle {
+      font-size: 14px;
+      color: #666;
     }
     
-    .stat-label {
-      color: #6c757d;
-      font-size: 0.9rem;
-      margin-top: 4px;
-    }
-    
-    .interactive-legend {
+    .legend {
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 20px;
+      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
     }
     
     .legend-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
-      background: rgba(255, 255, 255, 0.7);
-      border-radius: 20px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border: 2px solid transparent;
-    }
-    
-    .legend-item:hover {
-      background: white;
-      border-color: #667eea;
-      transform: translateY(-2px);
+      font-size: 12px;
     }
     
     .legend-color {
       width: 12px;
       height: 12px;
-      border-radius: 50%;
+      border-radius: 1px;
     }
     
-    .story-flow {
+    .arrow-right {
       position: absolute;
+      right: -30px;
       top: 50%;
-      right: 24px;
       transform: translateY(-50%);
-      font-size: 2rem;
-      color: rgba(255, 255, 255, 0.7);
-      animation: pulse 2s infinite;
+      font-size: 40px;
+      color: #22c55e;
     }
     
-    @keyframes pulse {
-      0%, 100% { opacity: 0.7; }
-      50% { opacity: 1; }
+    .right-section {
+      flex: 1;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
     }
     
-    .tooltip {
-      position: absolute;
-      background: rgba(0, 0, 0, 0.8);
+    .preferences-title {
+      font-size: 18px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      color: #333;
+    }
+    
+    .bar-chart-container {
+      height: 200px;
+      margin-bottom: 30px;
+    }
+    
+    .bottom-section {
+      background: #e8e8e8;
+      padding: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 40px;
+    }
+    
+    .loves-trust-section {
+      flex: 1;
+      max-width: 600px;
+    }
+    
+    .loves-trust-section h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 25px;
+      color: #333;
+    }
+    
+    .horizontal-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    .bar-row {
+      display: flex;
+      align-items: center;
+      height: 35px;
+    }
+    
+    .bar-positive {
+      background: #22c55e;
+      height: 30px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
       color: white;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      z-index: 1000;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 10px;
     }
     
-    @media (max-width: 768px) {
-      .dashboard {
-        grid-template-columns: 1fr;
-      }
-      
-      .hero-card {
-        flex-direction: column;
-        text-align: center;
-      }
-      
-      .hero-content h1 {
-        font-size: 2rem;
-      }
+    .bar-negative {
+      background: #f97316;
+      height: 30px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 11px;
+      font-weight: bold;
+      margin-right: 10px;
+    }
+    
+    .bar-label {
+      font-size: 13px;
+      color: #333;
+    }
+    
+    .curved-arrow {
+      margin-top: 100px;
+      font-size: 80px;
+      color: #22c55e;
+      transform: scaleX(-1);
     }
   </style>
 </head>
 <body>
   <div class="dashboard">
-    <!-- Hero Section -->
-    <div class="card hero-card">
-      <div class="product-image">🍌</div>
-      <div class="hero-content">
-        <h1>Chunky Monkey Premium</h1>
-        <p>Banana Ice Cream with Fudge Chunks & Walnuts</p>
+    <!-- Header -->
+    <div class="header-section">
+      Consumers don't see Lean Cuisine as just a "healthy frozen meal." They choose it as a silent self-coach — a tool to feel back in control of eating without pressure or guilt.
+    </div>
+
+    <!-- Main Layout -->
+    <div class="main-layout">
+      <!-- Left Section - Product -->
+      <div class="left-section">
+        <div class="product-image"></div>
         <div class="rating">
           <span class="stars">★★★★☆</span>
-          <span>4.3 (15,647 reviews)</span>
+          <span class="rating-text">(4.3)</span>
+        </div>
+        <div class="product-title">Lean Cuisine Alfredo Pasta Microwavable Meals</div>
+      </div>
+
+      <!-- Middle Section - Donut Chart -->
+      <div class="middle-section">
+        <div class="donut-container">
+          <canvas id="donutChart"></canvas>
+          <div class="donut-center">
+            <div class="donut-title">Top 5</div>
+            <div class="donut-subtitle">Usage<br>Tribe</div>
+          </div>
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #dc2626;"></div>
+            <span>Busy Professionals</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #374151;"></div>
+            <span>College Students</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #0891b2;"></div>
+            <span>Parents (Kids' Meals)</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #ea580c;"></div>
+            <span>Health-Conscious Shoppers</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #16a34a;"></div>
+            <span>Party Planners</span>
+          </div>
+        </div>
+        <div class="arrow-right">→</div>
+      </div>
+
+      <!-- Right Section - Preferences -->
+      <div class="right-section">
+        <div class="preferences-title">Busy Professional Preferences</div>
+        <div class="bar-chart-container">
+          <canvas id="preferencesChart"></canvas>
         </div>
       </div>
-      <div class="story-flow">→</div>
     </div>
 
-    <!-- Key Insight -->
-    <div class="card insight-card">
-      <h2>💡 Consumer Psychology Insight</h2>
-      <p class="insight-text">
-        Health-conscious parents don't see Chunky Monkey as just a "premium dessert." 
-        They choose it as a guilt-free indulgence — a tool to satisfy cravings while 
-        maintaining their family's nutritional standards and values.
-      </p>
-      <div class="story-flow">↓</div>
-    </div>
-
-    <!-- Tribe Distribution -->
-    <div class="card chart-card">
-      <h3>📊 Top 5 Consumer Tribes</h3>
-      <div class="chart-container">
-        <canvas id="tribeChart"></canvas>
-      </div>
-      <div class="interactive-legend" id="tribeLegend"></div>
-    </div>
-
-    <!-- Tribe Preferences -->
-    <div class="card chart-card">
-      <h3>🎯 Tribe Influence Matrix</h3>
-      <div class="chart-container">
-        <canvas id="influenceChart"></canvas>
-      </div>
-      <div class="tribe-stats">
-        <div class="stat-item">
-          <span class="stat-value">34%</span>
-          <span class="stat-label">Primary Tribe</span>
+    <!-- Bottom Section -->
+    <div class="bottom-section">
+      <div class="loves-trust-section">
+        <h3>What Busy Professionals Love &<br>Where They Lose Trust</h3>
+        <div class="horizontal-bars">
+          <div class="bar-row">
+            <div class="bar-positive" style="width: 200px;">48</div>
+            <div class="bar-label">No prep, just heat</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-positive" style="width: 150px;">36</div>
+            <div class="bar-label">Faster than takeout</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-positive" style="width: 120px;">29</div>
+            <div class="bar-label">Fits weekday routine</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-positive" style="width: 100px;">24</div>
+            <div class="bar-label">Saves time on busy days</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-negative" style="width: 40px;">-9</div>
+            <div class="bar-label">Takes longer than advertised</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-negative" style="width: 50px;">-11</div>
+            <div class="bar-label">Microwave instructions unclear</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-negative" style="width: 60px;">-14</div>
+            <div class="bar-label">Heats unevenly / soggy texture</div>
+          </div>
+          <div class="bar-row">
+            <div class="bar-negative" style="width: 35px;">8</div>
+            <div class="bar-label">Too many steps for quick meal</div>
+          </div>
         </div>
-        <div class="stat-item">
-          <span class="stat-value">89.2</span>
-          <span class="stat-label">Peak Influence</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-value">14.3K</span>
-          <span class="stat-label">Total Reach</span>
-        </div>
       </div>
+      
+      <div class="curved-arrow">↻</div>
     </div>
   </div>
 
-  <div class="tooltip" id="tooltip"></div>
-
   <script>
-    // Wait for Chart.js to load
     window.addEventListener('load', function() {
       if (typeof Chart === 'undefined') {
         console.error('Chart.js failed to load');
         return;
       }
-      
-      // Data
-      const tribeData = [
-      { name: "Health-Conscious Parents", value: 34, size: 3420, color: "#667eea", influence: 89.2 },
-      { name: "Dessert Enthusiasts", value: 22, size: 4890, color: "#764ba2", influence: 85.7 },
-      { name: "Budget Shoppers", value: 17, size: 2680, color: "#f093fb", influence: 72.4 },
-      { name: "Texture Lovers", value: 14, size: 1950, color: "#4facfe", influence: 68.9 },
-      { name: "Flavor Purists", value: 13, size: 1240, color: "#43e97b", influence: 61.3 }
-    ];
 
-    // Chart configurations
-    const chartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          titleColor: '#fff',
-          bodyColor: '#fff',
-          borderColor: '#667eea',
-          borderWidth: 1,
-          cornerRadius: 8,
-          padding: 12
-        }
-      },
-      animation: {
-        duration: 1000,
-        easing: 'easeOutQuart'
-      }
-    };
-
-    // Tribe Distribution Donut Chart
-    const tribeCtx = document.getElementById('tribeChart');
-    const tribeChart = new Chart(tribeCtx, {
-      type: 'doughnut',
-      data: {
-        labels: tribeData.map(t => t.name),
-        datasets: [{
-          data: tribeData.map(t => t.value),
-          backgroundColor: tribeData.map(t => t.color),
-          borderWidth: 3,
-          borderColor: '#fff',
-          hoverBorderWidth: 4,
-          hoverOffset: 10
-        }]
-      },
-      options: {
-        ...chartOptions,
-        cutout: '60%',
-        plugins: {
-          ...chartOptions.plugins,
-          tooltip: {
-            ...chartOptions.plugins.tooltip,
-            callbacks: {
-              label: function(context) {
-                const label = context.label;
-                const value = context.parsed;
-                const size = tribeData[context.dataIndex].size;
-                return [`${label}: ${value}%`, `Size: ${size.toLocaleString()} consumers`];
-              }
-            }
-          }
-        }
-      }
-    });
-
-    // Influence Bar Chart
-    const influenceCtx = document.getElementById('influenceChart');
-    const influenceChart = new Chart(influenceCtx, {
-      type: 'bar',
-      data: {
-        labels: tribeData.map(t => t.name.split(' ').slice(0, 2).join(' ')),
-        datasets: [{
-          label: 'Influence Score',
-          data: tribeData.map(t => t.influence),
-          backgroundColor: tribeData.map(t => t.color),
-          borderRadius: 8,
-          borderSkipped: false,
-        }]
-      },
-      options: {
-        ...chartOptions,
-        scales: {
-          y: {
-            beginAtZero: true,
-            max: 100,
-            grid: { color: 'rgba(0,0,0,0.1)' },
-            ticks: { color: '#6c757d' }
-          },
-          x: {
-            grid: { display: false },
-            ticks: { 
-              color: '#6c757d',
-              maxRotation: 45
-            }
-          }
+      // Donut Chart - smaller cutout
+      const donutCtx = document.getElementById('donutChart');
+      const donutChart = new Chart(donutCtx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Busy Professionals', 'College Students', 'Parents', 'Health-Conscious', 'Party Planners'],
+          datasets: [{
+            data: [34, 22, 17, 14, 13],
+            backgroundColor: ['#dc2626', '#374151', '#0891b2', '#ea580c', '#16a34a'],
+            borderWidth: 2,
+            borderColor: '#fff',
+            cutout: '40%'
+          }]
         },
-        plugins: {
-          ...chartOptions.plugins,
-          tooltip: {
-            ...chartOptions.plugins.tooltip,
-            callbacks: {
-              label: function(context) {
-                const index = context.dataIndex;
-                const tribe = tribeData[index];
-                return [
-                  `Influence Score: ${tribe.influence}`,
-                  `Market Share: ${tribe.value}%`,
-                  `Consumer Base: ${tribe.size.toLocaleString()}`
-                ];
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return context.label + ': ' + context.parsed + '%';
+                }
               }
             }
           }
         }
-      }
-    });
-
-    // Interactive Legend
-    const legendContainer = document.getElementById('tribeLegend');
-    tribeData.forEach((tribe, index) => {
-      const legendItem = document.createElement('div');
-      legendItem.className = 'legend-item';
-      legendItem.innerHTML = `
-        <div class="legend-color" style="background-color: ${tribe.color}"></div>
-        <span>${tribe.name}</span>
-      `;
-      
-      legendItem.addEventListener('click', () => {
-        const chart = tribeChart;
-        const meta = chart.getDatasetMeta(0);
-        meta.data[index].hidden = !meta.data[index].hidden;
-        chart.update();
-        
-        legendItem.style.opacity = meta.data[index].hidden ? '0.5' : '1';
       });
-      
-      legendContainer.appendChild(legendItem);
-    });
 
-    // Hover effects for cards
-    const cards = document.querySelectorAll('.card');
-    cards.forEach(card => {
-      card.addEventListener('mouseenter', function() {
-        this.style.transform = 'translateY(-5px) scale(1.02)';
-      });
-      
-      card.addEventListener('mouseleave', function() {
-        this.style.transform = 'translateY(0) scale(1)';
-      });
-    });
-
-    // Chart interaction effects
-    tribeChart.options.onHover = (event, activeElements) => {
-      event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
-    };
-
-    influenceChart.options.onHover = (event, activeElements) => {
-      event.native.target.style.cursor = activeElements.length > 0 ? 'pointer' : 'default';
-    };
-
-    // Animate stats on load
-    const statValues = document.querySelectorAll('.stat-value');
-    statValues.forEach(stat => {
-      const finalValue = stat.textContent;
-      stat.textContent = '0';
-      
-      const isPercentage = finalValue.includes('%');
-      const numericValue = parseFloat(finalValue.replace(/[^\d.]/g, ''));
-      
-      let current = 0;
-      const increment = numericValue / 50;
-      const timer = setInterval(() => {
-        current += increment;
-        if (current >= numericValue) {
-          current = numericValue;
-          clearInterval(timer);
+      // Vertical Bar Chart for Preferences
+      const preferencesCtx = document.getElementById('preferencesChart');
+      const preferencesChart = new Chart(preferencesCtx, {
+        type: 'bar',
+        data: {
+          labels: ['QUICK TO PREPARE', 'PORTION CONTROL', 'TASTES FRESH', 'GOOD PACKAGING', 'BALANCED NUTRITION', 'REHEATS WELL', 'AFFORDABLE PRICE', 'LOW MESS/EASY CLEAN-UP', 'SHELF LIFE', 'VISIBLE INGREDIENTS'],
+          datasets: [{
+            data: [95, 88, 82, 78, 75, 72, 68, 65, 62, 58],
+            backgroundColor: '#16a34a',
+            borderRadius: 2,
+            borderSkipped: false,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: {
+                maxRotation: 90,
+                minRotation: 90,
+                font: { size: 8 },
+                color: '#333'
+              }
+            },
+            y: {
+              beginAtZero: true,
+              max: 100,
+              grid: { display: false },
+              ticks: { display: false }
+            }
+          }
         }
-        
-        stat.textContent = isPercentage ? 
-          `${Math.round(current)}%` : 
-          finalValue.includes('K') ? 
-            `${(current/1000).toFixed(1)}K` : 
-            Math.round(current).toString();
-      }, 30);
+      });
     });
-    
-    }); // End of window load event listener
   </script>
 </body>
 </html>
