@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Lean Cuisine Consumer Insights Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
   <style>
     * {
       margin: 0;
@@ -53,7 +54,7 @@
     .product-image {
       width: 240px;
       height: 320px;
-      background: url('https://images.unsplash.com/photo-1594756202469-9ff9799b2e4e?w=300&h=400&fit=crop') center/cover;
+      background: url('https://images.unsplash.com/photo-1546549032-9571cd6b27cc?w=300&h=400&fit=crop') center/cover;
       border-radius: 8px;
       margin-bottom: 15px;
       box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -174,6 +175,7 @@
       background: #e8e8e8;
       padding: 20px;
       display: flex;
+      justify-content: center;
       align-items: flex-start;
       gap: 40px;
     }
@@ -241,6 +243,46 @@
       color: #22c55e;
       transform: scaleX(-1);
     }
+    
+    .sentiment-section {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .sentiment-title {
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
+    }
+    
+    .sentiment-emojis {
+      display: flex;
+      gap: 5px;
+      font-size: 18px;
+    }
+    
+    .heystack-branding {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      color: #666;
+    }
+    
+    .heystack-logo {
+      width: 20px;
+      height: 20px;
+      background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDJMMTMuMDkgOC4yNkwyMCA5TDEzLjA5IDE1Ljc0TDEyIDIyTDEwLjkxIDE1Ljc0TDQgOUwxMC45MSA4LjI2TDEyIDJaIiBmaWxsPSIjMDBCQ0Q0Ii8+Cjwvc3ZnPgo=') center/contain no-repeat;
+    }
+    
+    .dashboard {
+      position: relative;
+    }
   </style>
 </head>
 <body>
@@ -258,6 +300,12 @@
         <div class="rating">
           <span class="stars">★★★★☆</span>
           <span class="rating-text">(4.3)</span>
+        </div>
+        <div class="sentiment-section">
+          <span class="sentiment-title">Sentiment:</span>
+          <div class="sentiment-emojis">
+            <span>😊😊😊😊😐</span>
+          </div>
         </div>
         <div class="product-title">Lean Cuisine Alfredo Pasta Microwavable Meals</div>
       </div>
@@ -344,8 +392,12 @@
           </div>
         </div>
       </div>
-      
-      <div class="curved-arrow">↻</div>
+    </div>
+    
+    <!-- Heystack Branding -->
+    <div class="heystack-branding">
+      <div class="heystack-logo"></div>
+      <span>Heystack</span>
     </div>
   </div>
 
@@ -355,6 +407,9 @@
         console.error('Chart.js failed to load');
         return;
       }
+
+      // Register the datalabels plugin
+      Chart.register(ChartDataLabels);
 
       // Donut Chart - smaller cutout
       const donutCtx = document.getElementById('donutChart');
@@ -381,6 +436,17 @@
                   return context.label + ': ' + context.parsed + '%';
                 }
               }
+            },
+            datalabels: {
+              display: true,
+              color: 'white',
+              font: {
+                weight: 'bold',
+                size: 12
+              },
+              formatter: function(value, context) {
+                return value + '%';
+              }
             }
           }
         }
@@ -403,7 +469,19 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: { display: false }
+            legend: { display: false },
+            datalabels: {
+              anchor: 'end',
+              align: 'top',
+              color: 'white',
+              font: {
+                weight: 'bold',
+                size: 10
+              },
+              formatter: function(value, context) {
+                return value;
+              }
+            }
           },
           scales: {
             x: {
