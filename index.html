@@ -1,516 +1,382 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lean Cuisine Consumer Insights Dashboard</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.2.1/chart.umd.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
-    body {
-      font-family: Arial, sans-serif;
-      background: #e8e8e8;
-      color: #333;
-      line-height: 1.2;
-    }
-    
-    .dashboard {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 0;
-      background: #e8e8e8;
-    }
-    
-    .header-section {
-      background: #6b7280;
-      color: white;
-      padding: 15px 20px;
-      font-size: 18px;
-      font-weight: normal;
-      margin-bottom: 0;
-    }
-    
-    .main-layout {
-      display: flex;
-      background: #e8e8e8;
-      min-height: 500px;
-      padding: 20px 0;
-    }
-    
-    .left-section {
-      width: 280px;
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    
-    .product-image {
-      width: 240px;
-      height: 320px;
-      background: url('https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=400&fit=crop') center/cover;
-      border-radius: 8px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-    
-    .rating {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 15px;
-    }
-    
-    .stars {
-      color: #ffd700;
-      font-size: 18px;
-    }
-    
-    .rating-text {
-      color: #666;
-      font-size: 16px;
-    }
-    
-    .product-title {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: left;
-      color: #333;
-      width: 100%;
-    }
-    
-    .middle-section {
-      width: 400px;
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      position: relative;
-    }
-    
-    .donut-container {
-      width: 300px;
-      height: 300px;
-      position: relative;
-      margin-bottom: 20px;
-    }
-    
-    .donut-center {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      text-align: center;
-      font-weight: bold;
-      color: #333;
-      z-index: 10;
-    }
-    
-    .donut-title {
-      font-size: 16px;
-      margin-bottom: 2px;
-    }
-    
-    .donut-subtitle {
-      font-size: 14px;
-      color: #666;
-    }
-    
-    .legend {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      align-items: flex-start;
-    }
-    
-    .legend-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-    }
-    
-    .legend-color {
-      width: 12px;
-      height: 12px;
-      border-radius: 1px;
-    }
-    
-    .arrow-right {
-      position: absolute;
-      right: -30px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 40px;
-      color: #22c55e;
-    }
-    
-    .right-section {
-      flex: 1;
-      padding: 0 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .preferences-title {
-      font-size: 18px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 15px;
-      color: #333;
-    }
-    
-    .bar-chart-container {
-      height: 200px;
-      margin-bottom: 30px;
-    }
-    
-    .bottom-section {
-      background: #e8e8e8;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-    }
-    
-    .loves-trust-section {
-      flex: 1;
-      max-width: 600px;
-    }
-    
-    .loves-trust-section h3 {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 25px;
-      color: #333;
-    }
-    
-    .horizontal-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    
-    .bar-row {
-      display: flex;
-      align-items: center;
-      height: 35px;
-    }
-    
-    .bar-positive {
-      background: #22c55e;
-      height: 30px;
-      border-radius: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 8px;
-      color: white;
-      font-size: 13px;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-    
-    .bar-negative {
-      background: #f97316;
-      height: 30px;
-      border-radius: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
-      padding-right: 8px;
-      color: white;
-      font-size: 13px;
-      font-weight: bold;
-      margin-right: 10px;
-    }
-    
-    .bar-label {
-      font-size: 15px;
-      color: #333;
-    }
-    
-    .curved-arrow {
-      margin-top: 100px;
-      font-size: 80px;
-      color: #22c55e;
-      transform: scaleX(-1);
-    }
-    
-    .sentiment-section {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 15px;
-    }
-    
-    .sentiment-title {
-      font-size: 14px;
-      font-weight: bold;
-      color: #333;
-    }
-    
-    .sentiment-emojis {
-      display: flex;
-      gap: 5px;
-      font-size: 18px;
-    }
-    
-    .heystack-branding {
-      position: absolute;
-      bottom: 10px;
-      right: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      color: #333;
-      font-weight: 500;
-    }
-    
-    .heystack-logo {
-      width: 30px;
-      height: 30px;
-      background: #00BCD4;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: bold;
-      font-size: 16px;
-    }
-    
-    .dashboard {
-      position: relative;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vital Pursuit Consumer Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(135deg, #3498db, #9b59b6);
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 2px;
+        }
+
+        .tribes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .tribe-card {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tribe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(30px, -30px);
+        }
+
+        .tribe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .tribe-card:nth-child(odd) { border-left-color: #e74c3c; }
+        .tribe-card:nth-child(even) { border-left-color: #3498db; }
+
+        .tribe-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .tribe-description {
+            color: #555;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .usage-patterns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .pattern-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .pattern-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+        }
+
+        .pattern-number {
+            width: 35px;
+            height: 35px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .pattern-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .pattern-description {
+            color: #666;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .stats-bar {
+            background: #f8f9fa;
+            padding: 30px;
+            margin: 40px 0;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #3498db;
+            display: block;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .content { padding: 20px; }
+            .tribes-grid { grid-template-columns: 1fr; }
+            .usage-patterns { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div class="dashboard">
-    <!-- Header -->
-    <div class="header-section">
-      Consumers don't see Lean Cuisine as just a "healthy frozen meal." They choose it as a silent self-coach — a tool to feel back in control of eating without pressure or guilt.
+    <div class="container">
+        <div class="header">
+            <h1>Vital Pursuit Consumer Analysis</h1>
+            <p class="subtitle">Consumer Tribes & Usage Patterns in the GLP-1 Market</p>
+        </div>
+
+        <div class="content">
+            <div class="stats-bar">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-number">30M</span>
+                        <span class="stat-label">Projected GLP-1 Users by 2030</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">9%</span>
+                        <span class="stat-label">Of US Population by 2030</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">60%</span>
+                        <span class="stat-label">Reduction in Snack Consumption</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number">80%</span>
+                        <span class="stat-label">Increase in Fruit/Vegetable Intake</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">10 Consumer Tribes</h2>
+                <div class="tribes-grid">
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">🎯 The Convenience Seekers</h3>
+                        <p class="tribe-description">Millennial-led households prioritizing quick, nutritious meal solutions. They value air fryer compatibility and under-$4 price points for hassle-free nutrition.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">💪 The Protein Prioritizers</h3>
+                        <p class="tribe-description">Users focused on maintaining muscle mass while on GLP-1 medications. They actively seek 20+ grams of protein per meal to combat medication-induced muscle loss.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">⚖️ The Portion Controllers</h3>
+                        <p class="tribe-description">Individuals who appreciate appropriately sized meals that align with their reduced appetite from GLP-1 medications. They value feeling satisfied without overeating.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">🏥 The Medical Managers</h3>
+                        <p class="tribe-description">Gen X users managing diabetes with GLP-1s, focusing on blood sugar control and nutritional balance. Often lower income, seeking affordable healthy options.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">✨ The Aesthetic Achievers</h3>
+                        <p class="tribe-description">Younger, higher-income users using GLP-1s for weight loss (<15 lbs). They're willing to pay premium for products that support their aesthetic goals.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">🌱 The Health Optimizers</h3>
+                        <p class="tribe-description">Users increasing fruit and vegetable consumption by 80%. They seek nutrient-dense foods and specialty health products to maximize their wellness journey.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">⏰ The Time-Pressed Professionals</h3>
+                        <p class="tribe-description">Busy professionals who need quick meal solutions that don't compromise on nutrition. They value frozen meals that can be prepared in minutes.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">🎨 The Taste Explorers</h3>
+                        <p class="tribe-description">Users who don't want to sacrifice flavor for health. They actively review taste profiles and seek varied meal options like cauliflower pizza and mac & cheese.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">💰 The Budget-Conscious</h3>
+                        <p class="tribe-description">Lower-income GLP-1 users who need affordable nutrition solutions. They gravitate toward products under $4 that still provide quality nutrition and satisfaction.</p>
+                    </div>
+
+                    <div class="tribe-card">
+                        <h3 class="tribe-title">📱 The Social Sharers</h3>
+                        <p class="tribe-description">Active on social media platforms like TikTok, sharing their GLP-1 journey and product experiences. They influence others through authentic reviews and usage content.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">10 Key Usage Patterns</h2>
+                <div class="usage-patterns">
+                    <div class="pattern-card">
+                        <div class="pattern-number">1</div>
+                        <h3 class="pattern-title">Meal Replacement Strategy</h3>
+                        <p class="pattern-description">Using Vital Pursuit as primary meal solutions rather than supplements, replacing traditional lunch or dinner with convenient frozen options.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">2</div>
+                        <h3 class="pattern-title">Air Fryer Integration</h3>
+                        <p class="pattern-description">Consumers specifically mention air fryer compatibility as a key usage driver, preferring this cooking method for better texture and convenience.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">3</div>
+                        <h3 class="pattern-title">Protein-First Consumption</h3>
+                        <p class="pattern-description">Users prioritize protein content (20+ grams) and consume protein portions first to maximize satiety and maintain muscle mass during weight loss.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">4</div>
+                        <h3 class="pattern-title">Snack Substitution</h3>
+                        <p class="pattern-description">40-60% reduction in traditional snacking, using smaller Vital Pursuit portions as nutrient-dense alternatives to chips and cookies.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">5</div>
+                        <h3 class="pattern-title">Batch Purchase Behavior</h3>
+                        <p class="pattern-description">Consumers buy multiple varieties at once, storing them for quick access when appetite strikes unexpectedly due to GLP-1 medication timing.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">6</div>
+                        <h3 class="pattern-title">Appetite Window Eating</h3>
+                        <p class="pattern-description">Users consume meals during narrow appetite windows when GLP-1 effects are less pronounced, often eating quickly before satiety kicks in.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">7</div>
+                        <h3 class="pattern-title">Variety Rotation</h3>
+                        <p class="pattern-description">Cycling through different flavors (pizza, mac & cheese, bowls) to prevent taste fatigue and maintain interest in eating when appetite is suppressed.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">8</div>
+                        <h3 class="pattern-title">Social Validation Seeking</h3>
+                        <p class="pattern-description">Sharing experiences on social media with hashtags like #VitalPursuit and #OnMyVitalPursuit to connect with others on similar journeys.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">9</div>
+                        <h3 class="pattern-title">Nutritional Gap Filling</h3>
+                        <p class="pattern-description">Using products to ensure adequate vitamin, mineral, and fiber intake when overall food consumption is significantly reduced due to medication effects.</p>
+                    </div>
+
+                    <div class="pattern-card">
+                        <div class="pattern-number">10</div> 
+                        <h3 class="pattern-title">Emergency Eating</h3>
+                        <p class="pattern-description">Keeping frozen meals as backup for moments when they feel hungry but need something immediately available and nutritionally appropriate.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Main Layout -->
-    <div class="main-layout">
-      <!-- Left Section - Product -->
-      <div class="left-section">
-        <div class="product-image"></div>
-        <div class="rating">
-          <span class="stars">★★★★☆</span>
-          <span class="rating-text">(4.3)</span>
-        </div>
-        <div class="sentiment-section">
-          <span class="sentiment-title">Sentiment:</span>
-          <div class="sentiment-emojis">
-            <span>😊😊😊😊😐</span>
-          </div>
-        </div>
-        <div class="product-title">Lean Cuisine Alfredo Pasta Microwavable Meals</div>
-      </div>
-
-      <!-- Middle Section - Donut Chart -->
-      <div class="middle-section">
-        <div class="donut-container">
-          <canvas id="donutChart"></canvas>
-          <div class="donut-center">
-            <div class="donut-title">Top 5</div>
-            <div class="donut-subtitle">Usage<br>Tribe</div>
-          </div>
-        </div>
-        <div class="legend">
-          <div class="legend-item">
-            <div class="legend-color" style="background-color: #dc2626;"></div>
-            <span>Busy Professionals</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background-color: #374151;"></div>
-            <span>College Students</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background-color: #0891b2;"></div>
-            <span>Parents (Kids' Meals)</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background-color: #ea580c;"></div>
-            <span>Health-Conscious Shoppers</span>
-          </div>
-          <div class="legend-item">
-            <div class="legend-color" style="background-color: #16a34a;"></div>
-            <span>Party Planners</span>
-          </div>
-        </div>
-        <div class="arrow-right">→</div>
-      </div>
-
-      <!-- Right Section - Preferences -->
-      <div class="right-section">
-        <div class="preferences-title">Busy Professional Preferences</div>
-        <div class="bar-chart-container">
-          <canvas id="preferencesChart"></canvas>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Section -->
-    <div class="bottom-section">
-      <div class="loves-trust-section">
-        <h3>What Busy Professionals Love &<br>Where They Lose Trust</h3>
-        <div class="horizontal-bars">
-          <div class="bar-row">
-            <div class="bar-positive" style="width: 200px;">48</div>
-            <div class="bar-label">No prep, just heat</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-positive" style="width: 150px;">36</div>
-            <div class="bar-label">Faster than takeout</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-positive" style="width: 120px;">29</div>
-            <div class="bar-label">Fits weekday routine</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-positive" style="width: 100px;">24</div>
-            <div class="bar-label">Saves time on busy days</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-negative" style="width: 40px;">-9</div>
-            <div class="bar-label">Takes longer than advertised</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-negative" style="width: 50px;">-11</div>
-            <div class="bar-label">Microwave instructions unclear</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-negative" style="width: 60px;">-14</div>
-            <div class="bar-label">Heats unevenly / soggy texture</div>
-          </div>
-          <div class="bar-row">
-            <div class="bar-negative" style="width: 35px;">8</div>
-            <div class="bar-label">Too many steps for quick meal</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- Heystack Branding -->
-    <div class="heystack-branding">
-      <div class="heystack-logo"></div>
-      <span>Heystack</span>
-    </div>
-  </div>
-
-  <script>
-    window.addEventListener('load', function() {
-      if (typeof Chart === 'undefined') {
-        console.error('Chart.js failed to load');
-        return;
-      }
-
-      // Register the datalabels plugin
-      Chart.register(ChartDataLabels);
-
-      // Donut Chart - smaller cutout
-      const donutCtx = document.getElementById('donutChart');
-      const donutChart = new Chart(donutCtx, {
-        type: 'doughnut',
-        data: {
-          labels: ['Busy Professionals', 'College Students', 'Parents', 'Health-Conscious', 'Party Planners'],
-          datasets: [{
-            data: [34, 22, 17, 14, 13],
-            backgroundColor: ['#dc2626', '#374151', '#0891b2', '#ea580c', '#16a34a'],
-            borderWidth: 2,
-            borderColor: '#fff',
-            cutout: '40%'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return context.label + ': ' + context.parsed + '%';
-                }
-              }
-            },
-            datalabels: {
-              display: true,
-              color: 'white',
-              font: {
-                weight: 'bold',
-                size: 12
-              },
-              formatter: function(value, context) {
-                return value + '%';
-              }
-            }
-          }
-        }
-      });
-
-      // Vertical Bar Chart for Preferences
-      const preferencesCtx = document.getElementById('preferencesChart');
-      const preferencesChart = new Chart(preferencesCtx, {
-        type: 'bar',
-        data: {
-          labels: ['QUICK TO PREPARE', 'PORTION CONTROL', 'TASTES FRESH', 'GOOD PACKAGING', 'BALANCED NUTRITION', 'REHEATS WELL', 'AFFORDABLE PRICE', 'LOW MESS/EASY CLEAN-UP', 'SHELF LIFE', 'VISIBLE INGREDIENTS'],
-          datasets: [{
-            data: [95, 88, 82, 78, 75, 72, 68, 65, 62, 58],
-            backgroundColor: '#16a34a',
-            borderRadius: 2,
-            borderSkipped: false,
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              anchor: 'end',
-              align: 'top',
-              color: 'white',
-              font: {
-                weight: 'bold',
-                size: 10
-              },
-              formatter: function(value, context) {
-                return value;
-              }
-            }
-          },
-          scales: {
-            x: {
-              grid: { display: false },
-              ticks: {
-                maxRotation: 90,
-                minRotation: 90,
-                font: { size: 8 },
-                color: '#333'
-              }
-            },
-            y: {
-              beginAtZero: true,
-              max: 100,
-              grid: { display: false },
-              ticks: { display: false }
-            }
-          }
-        }
-      });
-    });
-  </script>
 </body>
 </html>
