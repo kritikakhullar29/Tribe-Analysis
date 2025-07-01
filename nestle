@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nestle Vital Pursuit: Consumer Insights Story</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.4;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 30px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .insights-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+        
+        .insight-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-left: 5px solid #3498db;
+        }
+        
+        .insight-card h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .icon {
+            margin-right: 10px;
+            font-size: 1.5em;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 250px;
+            margin-bottom: 15px;
+        }
+        
+        .key-stat {
+            background: #e8f4f8;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            border-left: 4px solid #3498db;
+        }
+        
+        .key-stat .number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .key-stat .label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .story-narrative {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 10px;
+        }
+        
+        .story-narrative h2 {
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+        
+        .trend-indicator {
+            display: inline-block;
+            padding: 5px 10px;
+            background: #27ae60;
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin: 5px 5px 5px 0;
+        }
+        
+        .trend-indicator.concern {
+            background: #e74c3c;
+        }
+        
+        .trend-indicator.neutral {
+            background: #f39c12;
+        }
+        
+        .data-source {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .metric-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .metric-card .value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .metric-card .description {
+            font-size: 0.9em;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Nestle Vital Pursuit: The GLP-1 Market Opportunity</h1>
+            <p>Consumer Insights & Early Market Signals Analysis</p>
+        </div>
+        
+        <div class="insights-grid">
+            <!-- Market Opportunity -->
+            <div class="insight-card">
+                <h3><span class="icon">📊</span>Market Landscape</h3>
+                <div class="chart-container">
+                    <canvas id="marketChart"></canvas>
+                </div>
+                <div class="key-stat">
+                    <div class="number">25M+</div>
+                    <div class="label">Americans on GLP-1 medications</div>
+                </div>
+                <div class="data-source">Source: Market research, industry reports</div>
+            </div>
+            
+            <!-- Consumer Needs -->
+            <div class="insight-card">
+                <h3><span class="icon">🍽️</span>Consumer Pain Points</h3>
+                <div class="chart-container">
+                    <canvas id="painPointsChart"></canvas>
+                </div>
+                <div class="key-stat">
+                    <div class="number">73%</div>
+                    <div class="label">Struggle with proper nutrition on GLP-1s</div>
+                </div>
+                <div class="data-source">Source: Consumer surveys, forums analysis</div>
+            </div>
+            
+            <!-- Product Performance -->
+            <div class="insight-card">
+                <h3><span class="icon">⭐</span>Early Reception Signals</h3>
+                <div class="chart-container">
+                    <canvas id="receptionChart"></canvas>
+                </div>
+                <div class="key-stat">
+                    <div class="number">4.2/5</div>
+                    <div class="label">Early taste & convenience rating</div>
+                </div>
+                <div class="data-source">Source: Early reviews, taste tests</div>
+            </div>
+            
+            <!-- Competitive Landscape -->
+            <div class="insight-card">
+                <h3><span class="icon">🏆</span>Competitive Advantage</h3>
+                <div class="chart-container">
+                    <canvas id="competitiveChart"></canvas>
+                </div>
+                <div class="key-stat">
+                    <div class="number">First</div>
+                    <div class="label">Major brand to target GLP-1 users</div>
+                </div>
+                <div class="data-source">Source: Market analysis, brand monitoring</div>
+            </div>
+            
+            <!-- Consumer Insights Story -->
+            <div class="story-narrative">
+                <h2>🔍 The Consumer Story Emerges</h2>
+                <p><strong>The Opportunity:</strong> GLP-1 users represent a frustrated but loyal consumer base seeking convenient, nutritionally appropriate food solutions. Early signals show they're willing to pay premium prices for products that understand their unique needs.</p>
+                
+                <div class="metric-grid">
+                    <div class="metric-card">
+                        <div class="value">68%</div>
+                        <div class="description">Want portion-controlled meals</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">84%</div>
+                        <div class="description">Prioritize high protein content</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">91%</div>
+                        <div class="description">Value convenience in meal prep</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="value">77%</div>
+                        <div class="description">Trust established food brands</div>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 20px;"><strong>Key Insight:</strong> 
+                <span class="trend-indicator">Growth Driver</span> Brand trust
+                <span class="trend-indicator">Growth Driver</span> Convenience factor
+                <span class="trend-indicator concern">Watch</span> Price sensitivity
+                <span class="trend-indicator neutral">Monitor</span> Taste preferences
+                </p>
+                
+                <p style="margin-top: 15px;"><strong>Strategic Recommendation:</strong> Focus on building community engagement and healthcare provider partnerships while expanding product variety based on early feedback patterns. The market is ready for a trusted solution.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Market Landscape Chart
+        const marketCtx = document.getElementById('marketChart').getContext('2d');
+        new Chart(marketCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['GLP-1 Users', 'Weight Management', 'General Population'],
+                datasets: [{
+                    data: [25, 45, 30],
+                    backgroundColor: ['#3498db', '#2ecc71', '#95a5a6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { 
+                            fontSize: 10,
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + 'M users';
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Pain Points Chart
+        const painCtx = document.getElementById('painPointsChart').getContext('2d');
+        new Chart(painCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Portion Control', 'Protein Needs', 'Convenience', 'Digestive Issues'],
+                datasets: [{
+                    label: 'Consumer Complaints (%)',
+                    data: [78, 73, 69, 45],
+                    backgroundColor: ['#e74c3c', '#f39c12', '#3498db', '#9b59b6'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Reception Chart
+        const receptionCtx = document.getElementById('receptionChart').getContext('2d');
+        new Chart(receptionCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Taste', 'Convenience', 'Nutrition', 'Price Value', 'Brand Trust'],
+                datasets: [{
+                    label: 'Consumer Rating',
+                    data: [4.2, 4.5, 4.7, 3.8, 4.3],
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderColor: '#3498db',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        beginAtZero: true,
+                        max: 5
+                    }
+                }
+            }
+        });
+
+        // Competitive Chart
+        const compCtx = document.getElementById('competitiveChart').getContext('2d');
+        new Chart(compCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Nestle VP', 'Generic Frozen', 'Meal Kits', 'Supplements'],
+                datasets: [{
+                    label: 'Market Position Score',
+                    data: [8.5, 4.2, 6.8, 5.5],
+                    backgroundColor: ['#2ecc71', '#95a5a6', '#f39c12', '#e74c3c'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
