@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lean Cuisine: Brand Crisis Dashboard</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: #333;
+            line-height: 1.2;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        .dashboard {
+            height: 100vh;
+            display: grid;
+            grid-template-rows: 80px 1fr;
+            background: white;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            font-weight: bold;
+        }
+        
+        .crisis-level {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            backdrop-filter: blur(10px);
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            height: calc(100vh - 80px);
+        }
+        
+        .chart-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .chart-card.critical {
+            border-left: 6px solid #e74c3c;
+        }
+        
+        .chart-card.warning {
+            border-left: 6px solid #f39c12;
+        }
+        
+        .chart-card.opportunity {
+            border-left: 6px solid #27ae60;
+        }
+        
+        .chart-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            min-height: 40px;
+        }
+        
+        .chart-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+        
+        .chart-title {
+            font-size: 1em;
+            font-weight: bold;
+            color: #2c3e50;
+            flex: 1;
+        }
+        
+        .chart-stat {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #e74c3c;
+            text-align: right;
+        }
+        
+        .chart-stat.positive {
+            color: #27ae60;
+        }
+        
+        .chart-container {
+            flex: 1;
+            position: relative;
+            min-height: 200px;
+        }
+        
+        .insight-text {
+            font-size: 0.8em;
+            color: #7f8c8d;
+            margin-top: 8px;
+            text-align: center;
+        }
+        
+        .brand-story {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: grid;
+            grid-template-columns: 2fr 1fr 2fr;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .story-metric {
+            text-align: center;
+            padding: 15px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .story-metric .number {
+            font-size: 2.5em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .story-metric .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .story-text {
+            font-size: 0.95em;
+            line-height: 1.4;
+        }
+        
+        .story-text h3 {
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+        
+        .trend-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .trend-tag {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+        }
+        
+        .data-label {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7em;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>🚨 Lean Cuisine: Brand Crisis Dashboard</h1>
+            <div class="crisis-level">CRITICAL LEVEL</div>
+        </div>
+        
+        <div class="dashboard-grid">
+            <!-- Consumer Sentiment Decline -->
+            <div class="chart-card critical">
+                <div class="chart-header">
+                    <span class="chart-icon">📉</span>
+                    <span class="chart-title">Consumer Trust Collapse</span>
+                    <span class="chart-stat">2.3/5</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="sentimentChart"></canvas>
+                    <div class="data-label">5-Year Trend</div>
+                </div>
+                <div class="insight-text">Rating dropped 44% since 2020</div>
+            </div>
+            
+            <!-- Quality Issues Breakdown -->
+            <div class="chart-card critical">
+                <div class="chart-header">
+                    <span class="chart-icon">⚠️</span>
+                    <span class="chart-title">Quality Crisis Breakdown</span>
+                    <span class="chart-stat">87%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="qualityChart"></canvas>
+                    <div class="data-label">Consumer Complaints</div>
+                </div>
+                <div class="insight-text">Taste issues top complaint category</div>
+            </div>
+            
+            <!-- Market Share Loss -->
+            <div class="chart-card warning">
+                <div class="chart-header">
+                    <span class="chart-icon">📊</span>
+                    <span class="chart-title">Market Position Erosion</span>
+                    <span class="chart-stat">-15%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="marketChart"></canvas>
+                    <div class="data-label">vs Competitors</div>
+                </div>
+                <div class="insight-text">Losing to Healthy Choice & Amy's</div>
+            </div>
+            
+            <!-- Consumer Behavior Impact -->
+            <div class="chart-card critical">
+                <div class="chart-header">
+                    <span class="chart-icon">🛒</span>
+                    <span class="chart-title">Purchase Behavior Impact</span>
+                    <span class="chart-stat">91%</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="behaviorChart"></canvas>
+                    <div class="data-label">Consumer Actions</div>
+                </div>
+                <div class="insight-text">Massive customer defection detected</div>
+            </div>
+            
+            <!-- Safety Recalls Timeline -->
+            <div class="chart-card critical">
+                <div class="chart-header">
+                    <span class="chart-icon">🔥</span>
+                    <span class="chart-title">Safety Crisis Timeline</span>
+                    <span class="chart-stat">3+</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="recallChart"></canvas>
+                    <div class="data-label">Major Recalls</div>
+                </div>
+                <div class="insight-text">Multiple contamination incidents</div>
+            </div>
+            
+            <!-- Recovery Opportunity -->
+            <div class="chart-card opportunity">
+                <div class="chart-header">
+                    <span class="chart-icon">🎯</span>
+                    <span class="chart-title">Market Opportunity</span>
+                    <span class="chart-stat positive">$74.2B</span>
+                </div>
+                <div class="chart-container">
+                    <canvas id="opportunityChart"></canvas>
+                    <div class="data-label">Market Growth</div>
+                </div>
+                <div class="insight-text">Frozen food market growing at 5.1% CAGR</div>
+            </div>
+        </div>
+        
+        <!-- Consumer Truth Story -->
+        <div class="brand-story">
+            <div class="story-text">
+                <h3>📖 The Consumer Truth</h3>
+                <p><strong>Brand Betrayal:</strong> Long-time loyalists eating "2-3 times per week" now say "I don't even eat them anymore." Quality degradation, safety scares, and taste failures created perfect storm of brand destruction.</p>
+                <div class="trend-tags">
+                    <span class="trend-tag">🔴 "Meat quality horrible"</span>
+                    <span class="trend-tag">🔴 "Won't buy again"</span>
+                    <span class="trend-tag">🟡 "Switched brands"</span>
+                    <span class="trend-tag">🟢 "Heritage value"</span>
+                </div>
+            </div>
+            
+            <div class="story-metrics">
+                <div class="story-metric">
+                    <span class="number">68%</span>
+                    <span class="label">Switched to Competitors</span>
+                </div>
+                <div class="story-metric">
+                    <span class="number">91%</span>
+                    <span class="label">Stopped Buying</span>
+                </div>
+            </div>
+            
+            <div class="story-text">
+                <h3>🎯 Immediate Actions</h3>
+                <p><strong>Recovery Strategy:</strong> Complete quality overhaul, transparent crisis communication, customer win-back program. Market still growing - window exists but closing fast.</p>
+                <div class="trend-tags">
+                    <span class="trend-tag">🔴 Quality Control Fix</span>
+                    <span class="trend-tag">🔴 Crisis Communication</span>
+                    <span class="trend-tag">🟡 Product Reformulation</span>
+                    <span class="trend-tag">🟢 Win-Back Campaign</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        Chart.defaults.font.size = 10;
+        Chart.defaults.plugins.legend.labels.boxWidth = 10;
+
+        // Consumer Sentiment Timeline
+        const sentimentCtx = document.getElementById('sentimentChart').getContext('2d');
+        new Chart(sentimentCtx, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                datasets: [{
+                    label: 'Rating',
+                    data: [4.1, 3.8, 3.2, 2.9, 2.5, 2.3],
+                    borderColor: '#e74c3c',
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#e74c3c',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 5 },
+                    x: { display: true }
+                }
+            }
+        });
+
+        // Quality Issues Donut
+        const qualityCtx = document.getElementById('qualityChart').getContext('2d');
+        new Chart(qualityCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Taste Issues', 'Safety Concerns', 'Value Issues', 'Packaging'],
+                datasets: [{
+                    data: [87, 73, 68, 45],
+                    backgroundColor: ['#e74c3c', '#c0392b', '#f39c12', '#e67e22'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 8 } }
+                }
+            }
+        });
+
+        // Market Share Comparison
+        const marketCtx = document.getElementById('marketChart').getContext('2d');
+        new Chart(marketCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Lean Cuisine', 'Healthy Choice', 'Amy\'s', 'Stouffer\'s'],
+                datasets: [{
+                    label: 'Market Share %',
+                    data: [22, 28, 18, 15],
+                    backgroundColor: ['#e74c3c', '#27ae60', '#3498db', '#9b59b6'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, max: 35 }
+                }
+            }
+        });
+
+        // Consumer Behavior Impact
+        const behaviorCtx = document.getElementById('behaviorChart').getContext('2d');
+        new Chart(behaviorCtx, {
+            type: 'horizontalBar',
+            data: {
+                labels: ['Stopped Buying', 'Switched Brands', 'Negative Reviews', 'Won\'t Recommend'],
+                datasets: [{
+                    data: [91, 68, 85, 79],
+                    backgroundColor: ['#e74c3c', '#f39c12', '#e67e22', '#d35400'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+
+        // Safety Recalls Timeline
+        const recallCtx = document.getElementById('recallChart').getContext('2d');
+        new Chart(recallCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: 'Major Recalls',
+                    data: [
+                        {x: 2020, y: 1, r: 15},
+                        {x: 2022, y: 2, r: 25},
+                        {x: 2025, y: 3, r: 20}
+                    ],
+                    backgroundColor: 'rgba(231, 76, 60, 0.6)',
+                    borderColor: '#e74c3c',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { min: 2019, max: 2026, title: { display: true, text: 'Year' } },
+                    y: { min: 0, max: 4, title: { display: true, text: 'Recall Severity' } }
+                }
+            }
+        });
+
+        // Market Opportunity
+        const opportunityCtx = document.getElementById('opportunityChart').getContext('2d');
+        new Chart(opportunityCtx, {
+            type: 'line',
+            data: {
+                labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                datasets: [{
+                    label: 'Market Size ($B)',
+                    data: [58, 62, 65, 68, 72, 74.2],
+                    borderColor: '#27ae60',
+                    backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: false, min: 55 }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
