@@ -1,382 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vital Pursuit Consumer Analysis</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 40px;
-            text-align: center;
-            position: relative;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.3;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 50px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(135deg, #3498db, #9b59b6);
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .tribes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .tribe-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 25px;
-            border-left: 5px solid;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tribe-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(30px, -30px);
-        }
-
-        .tribe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .tribe-card:nth-child(odd) { border-left-color: #e74c3c; }
-        .tribe-card:nth-child(even) { border-left-color: #3498db; }
-
-        .tribe-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tribe-description {
-            color: #555;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-        }
-
-        .usage-patterns {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .pattern-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .pattern-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
-        }
-
-        .pattern-number {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .pattern-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .pattern-description {
-            color: #666;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .stats-bar {
-            background: #f8f9fa;
-            padding: 30px;
-            margin: 40px 0;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: #3498db;
-            display: block;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2rem; }
-            .content { padding: 20px; }
-            .tribes-grid { grid-template-columns: 1fr; }
-            .usage-patterns { grid-template-columns: 1fr; }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Dolly Parton x Conagra Insights</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .header img {
+      width: 100px;
+      border-radius: 8px;
+    }
+    .intro-text {
+      flex: 1;
+    }
+    h1, h2, h3, p {
+      margin: 5px 0;
+    }
+    .section {
+      margin-bottom: 20px;
+    }
+    .charts {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    canvas {
+      width: 100% !important;
+      height: 200px !important;
+      background: #fff;
+      border-radius: 6px;
+    }
+    p.small {
+      font-size: 0.9em;
+      margin-top: 6px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Vital Pursuit Consumer Analysis</h1>
-            <p class="subtitle">Consumer Tribes & Usage Patterns in the GLP-1 Market</p>
-        </div>
-
-        <div class="content">
-            <div class="stats-bar">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number">30M</span>
-                        <span class="stat-label">Projected GLP-1 Users by 2030</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">9%</span>
-                        <span class="stat-label">Of US Population by 2030</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">60%</span>
-                        <span class="stat-label">Reduction in Snack Consumption</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">80%</span>
-                        <span class="stat-label">Increase in Fruit/Vegetable Intake</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2 class="section-title">10 Consumer Tribes</h2>
-                <div class="tribes-grid">
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🎯 The Convenience Seekers</h3>
-                        <p class="tribe-description">Millennial-led households prioritizing quick, nutritious meal solutions. They value air fryer compatibility and under-$4 price points for hassle-free nutrition.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">💪 The Protein Prioritizers</h3>
-                        <p class="tribe-description">Users focused on maintaining muscle mass while on GLP-1 medications. They actively seek 20+ grams of protein per meal to combat medication-induced muscle loss.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">⚖️ The Portion Controllers</h3>
-                        <p class="tribe-description">Individuals who appreciate appropriately sized meals that align with their reduced appetite from GLP-1 medications. They value feeling satisfied without overeating.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🏥 The Medical Managers</h3>
-                        <p class="tribe-description">Gen X users managing diabetes with GLP-1s, focusing on blood sugar control and nutritional balance. Often lower income, seeking affordable healthy options.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">✨ The Aesthetic Achievers</h3>
-                        <p class="tribe-description">Younger, higher-income users using GLP-1s for weight loss (<15 lbs). They're willing to pay premium for products that support their aesthetic goals.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🌱 The Health Optimizers</h3>
-                        <p class="tribe-description">Users increasing fruit and vegetable consumption by 80%. They seek nutrient-dense foods and specialty health products to maximize their wellness journey.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">⏰ The Time-Pressed Professionals</h3>
-                        <p class="tribe-description">Busy professionals who need quick meal solutions that don't compromise on nutrition. They value frozen meals that can be prepared in minutes.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🎨 The Taste Explorers</h3>
-                        <p class="tribe-description">Users who don't want to sacrifice flavor for health. They actively review taste profiles and seek varied meal options like cauliflower pizza and mac & cheese.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">💰 The Budget-Conscious</h3>
-                        <p class="tribe-description">Lower-income GLP-1 users who need affordable nutrition solutions. They gravitate toward products under $4 that still provide quality nutrition and satisfaction.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">📱 The Social Sharers</h3>
-                        <p class="tribe-description">Active on social media platforms like TikTok, sharing their GLP-1 journey and product experiences. They influence others through authentic reviews and usage content.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2 class="section-title">10 Key Usage Patterns</h2>
-                <div class="usage-patterns">
-                    <div class="pattern-card">
-                        <div class="pattern-number">1</div>
-                        <h3 class="pattern-title">Meal Replacement Strategy</h3>
-                        <p class="pattern-description">Using Vital Pursuit as primary meal solutions rather than supplements, replacing traditional lunch or dinner with convenient frozen options.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">2</div>
-                        <h3 class="pattern-title">Air Fryer Integration</h3>
-                        <p class="pattern-description">Consumers specifically mention air fryer compatibility as a key usage driver, preferring this cooking method for better texture and convenience.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">3</div>
-                        <h3 class="pattern-title">Protein-First Consumption</h3>
-                        <p class="pattern-description">Users prioritize protein content (20+ grams) and consume protein portions first to maximize satiety and maintain muscle mass during weight loss.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">4</div>
-                        <h3 class="pattern-title">Snack Substitution</h3>
-                        <p class="pattern-description">40-60% reduction in traditional snacking, using smaller Vital Pursuit portions as nutrient-dense alternatives to chips and cookies.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">5</div>
-                        <h3 class="pattern-title">Batch Purchase Behavior</h3>
-                        <p class="pattern-description">Consumers buy multiple varieties at once, storing them for quick access when appetite strikes unexpectedly due to GLP-1 medication timing.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">6</div>
-                        <h3 class="pattern-title">Appetite Window Eating</h3>
-                        <p class="pattern-description">Users consume meals during narrow appetite windows when GLP-1 effects are less pronounced, often eating quickly before satiety kicks in.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">7</div>
-                        <h3 class="pattern-title">Variety Rotation</h3>
-                        <p class="pattern-description">Cycling through different flavors (pizza, mac & cheese, bowls) to prevent taste fatigue and maintain interest in eating when appetite is suppressed.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">8</div>
-                        <h3 class="pattern-title">Social Validation Seeking</h3>
-                        <p class="pattern-description">Sharing experiences on social media with hashtags like #VitalPursuit and #OnMyVitalPursuit to connect with others on similar journeys.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">9</div>
-                        <h3 class="pattern-title">Nutritional Gap Filling</h3>
-                        <p class="pattern-description">Using products to ensure adequate vitamin, mineral, and fiber intake when overall food consumption is significantly reduced due to medication effects.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">10</div> 
-                        <h3 class="pattern-title">Emergency Eating</h3>
-                        <p class="pattern-description">Keeping frozen meals as backup for moments when they feel hungry but need something immediately available and nutritionally appropriate.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+  <div class="container">
+    <div class="header">
+      <div class="intro-text">
+        <h1>Dolly Parton x Conagra</h1>
+        <p><strong>Rating:</strong> 4.3 ⭐ | <strong>Reviews:</strong> 1,285</p>
+        <p class="small"><em>Concise insights from consumer reviews – highlighting launch sentiment, product themes, retailer challenges, and innovation trends</em></p>
+      </div>
+      <img src="https://www.bakingwithdolly.com/sites/g/files/qyyrlu791/files/images/products/Dolly_PDP_ChocolateCake_500x500.png" alt="Dolly Cake Mix">
     </div>
+
+    <div class="section charts">
+      <div>
+        <h3>📈 Sentiment Trend</h3>
+        <canvas id="sentimentLineChart"></canvas>
+      </div>
+      <div>
+        <h3>📊 Sentiment Share</h3>
+        <canvas id="sentimentPieChart"></canvas>
+      </div>
+    </div>
+
+    <div class="section charts">
+      <div>
+        <h3>🔍 Review Themes</h3>
+        <canvas id="themeBarChart"></canvas>
+        <p class="small">✅ Easy to bake, Nostalgic feel<br>⚠️ Too sweet, Packaging issues</p>
+      </div>
+      <div>
+        <h3>🎯 Flavor Performance</h3>
+        <canvas id="flavorSentiment"></canvas>
+      </div>
+    </div>
+
+    <div class="section charts">
+      <div>
+        <h3>🏪 Retailer Insights</h3>
+        <canvas id="retailerChart"></canvas>
+      </div>
+      <div>
+        <h3>📈 Trending Requests</h3>
+        <canvas id="nextWishChart"></canvas>
+        <p class="small">Red Velvet, Lower Sugar, Gluten-Free, On-the-go variants</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const options = {
+      plugins: { legend: { position: 'bottom' } },
+      responsive: true,
+      maintainAspectRatio: false
+    };
+
+    new Chart(document.getElementById('sentimentLineChart'), {
+      type: 'line',
+      data: {
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        datasets: [
+          {
+            label: 'Positive (%)',
+            data: [65, 70, 75, 73],
+            borderColor: '#4caf50', fill: false
+          },
+          {
+            label: 'Negative (%)',
+            data: [15, 12, 10, 11],
+            borderColor: '#e53935', fill: false
+          }
+        ]
+      },
+      options
+    });
+
+    new Chart(document.getElementById('sentimentPieChart'), {
+      type: 'pie',
+      data: {
+        labels: ['Positive', 'Neutral', 'Negative'],
+        datasets: [{
+          data: [70, 20, 10],
+          backgroundColor: ['#66bb6a', '#ffd54f', '#e53935']
+        }]
+      },
+      options
+    });
+
+    new Chart(document.getElementById('themeBarChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Easy to Bake', 'Nostalgia', 'Too Sweet', 'Packaging Issue', 'Flavorful'],
+        datasets: [{
+          label: 'Mentions',
+          data: [120, 95, 45, 30, 100],
+          backgroundColor: ['#81c784', '#aed581', '#ef5350', '#ef9a9a', '#64b5f6']
+        }]
+      },
+      options: { ...options, indexAxis: 'y' }
+    });
+
+    new Chart(document.getElementById('flavorSentiment'), {
+      type: 'bar',
+      data: {
+        labels: ['Banana', 'Chocolate', 'Coconut', 'Original'],
+        datasets: [
+          {
+            label: 'Positive',
+            data: [80, 100, 60, 90],
+            backgroundColor: '#4caf50'
+          },
+          {
+            label: 'Negative',
+            data: [10, 15, 25, 20],
+            backgroundColor: '#f44336'
+          }
+        ]
+      },
+      options
+    });
+
+    new Chart(document.getElementById('retailerChart'), {
+      type: 'bar',
+      data: {
+        labels: ['Walmart', 'Kroger', 'Amazon'],
+        datasets: [
+          {
+            label: 'Availability',
+            data: [90, 80, 65],
+            backgroundColor: '#42a5f5'
+          },
+          {
+            label: 'Fulfillment Issues (%)',
+            data: [5, 10, 20],
+            backgroundColor: '#ff7043'
+          }
+        ]
+      },
+      options
+    });
+
+    new Chart(document.getElementById('nextWishChart'), {
+      type: 'line',
+      data: {
+        labels: ['Red Velvet', 'Lower Sugar', 'Gluten-Free', 'Microwave'],
+        datasets: [{
+          label: 'Request Trend',
+          data: [55, 40, 35, 25],
+          borderColor: '#7e57c2',
+          backgroundColor: '#d1c4e9',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options
+    });
+  </script>
 </body>
 </html>
