@@ -218,18 +218,18 @@
                 <div class="insight-text">Rating dropped 44% since 2020</div>
             </div>
             
-            <!-- Quality Issues Breakdown -->
+            <!-- Review-Based Quality Issues -->
             <div class="chart-card critical">
                 <div class="chart-header">
                     <span class="chart-icon">⚠️</span>
-                    <span class="chart-title">Quality Crisis Breakdown</span>
-                    <span class="chart-stat">87%</span>
+                    <span class="chart-title">Consumer Complaints</span>
+                    <span class="chart-stat">89%</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="qualityChart"></canvas>
-                    <div class="data-label">Consumer Complaints</div>
+                    <div class="data-label">From Reviews</div>
                 </div>
-                <div class="insight-text">Taste issues top complaint category</div>
+                <div class="insight-text">Top issues from customer feedback</div>
             </div>
             
             <!-- Market Share Loss -->
@@ -246,32 +246,32 @@
                 <div class="insight-text">Losing to Healthy Choice & Amy's</div>
             </div>
             
-            <!-- Consumer Behavior Impact -->
+            <!-- Purchase Intent from Reviews -->
             <div class="chart-card critical">
                 <div class="chart-header">
                     <span class="chart-icon">🛒</span>
-                    <span class="chart-title">Purchase Behavior Impact</span>
-                    <span class="chart-stat">91%</span>
+                    <span class="chart-title">Purchase Intent Impact</span>
+                    <span class="chart-stat">78%</span>
                 </div>
                 <div class="chart-container">
                     <canvas id="behaviorChart"></canvas>
-                    <div class="data-label">Consumer Actions</div>
+                    <div class="data-label">Consumer Sentiment</div>
                 </div>
-                <div class="insight-text">Massive customer defection detected</div>
+                <div class="insight-text">Negative purchase decisions from reviews</div>
             </div>
             
-            <!-- Safety Recalls Timeline -->
+            <!-- Review Sentiment Over Time -->
             <div class="chart-card critical">
                 <div class="chart-header">
-                    <span class="chart-icon">🔥</span>
-                    <span class="chart-title">Safety Crisis Timeline</span>
-                    <span class="chart-stat">3+</span>
+                    <span class="chart-icon">💬</span>
+                    <span class="chart-title">Review Sentiment Trend</span>
+                    <span class="chart-stat">-62%</span>
                 </div>
                 <div class="chart-container">
-                    <canvas id="recallChart"></canvas>
-                    <div class="data-label">Major Recalls</div>
+                    <canvas id="sentimentTrendChart"></canvas>
+                    <div class="data-label">Monthly Reviews</div>
                 </div>
-                <div class="insight-text">Multiple contamination incidents</div>
+                <div class="insight-text">Consistent negative sentiment pattern</div>
             </div>
             
             <!-- Recovery Opportunity -->
@@ -293,7 +293,7 @@
         <div class="brand-story">
             <div class="story-text">
                 <h3>📖 The Consumer Truth</h3>
-                <p><strong>Brand Betrayal:</strong> Long-time loyalists eating "2-3 times per week" now say "I don't even eat them anymore." Quality degradation, safety scares, and taste failures created perfect storm of brand destruction.</p>
+                <p><strong>Brand Betrayal:</strong> Long-time loyalists eating "2-3 times per week" now say "I don't even eat them anymore." Quality degradation and taste failures created perfect storm of brand destruction.</p>
                 <div class="trend-tags">
                     <span class="trend-tag">🔴 "Meat quality horrible"</span>
                     <span class="trend-tag">🔴 "Won't buy again"</span>
@@ -308,8 +308,8 @@
                     <span class="label">Switched to Competitors</span>
                 </div>
                 <div class="story-metric">
-                    <span class="number">91%</span>
-                    <span class="label">Stopped Buying</span>
+                    <span class="number">78%</span>
+                    <span class="label">Negative Reviews</span>
                 </div>
             </div>
             
@@ -337,7 +337,7 @@
             data: {
                 labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
                 datasets: [{
-                    label: 'Rating',
+                    label: 'Consumer Rating',
                     data: [4.1, 3.8, 3.2, 2.9, 2.5, 2.3],
                     borderColor: '#e74c3c',
                     backgroundColor: 'rgba(231, 76, 60, 0.1)',
@@ -351,31 +351,60 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { 
+                        display: true,
+                        position: 'bottom',
+                        labels: { padding: 10, fontSize: 9 }
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true, max: 5 },
+                    y: { 
+                        beginAtZero: true, 
+                        max: 5,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '/5';
+                            }
+                        }
+                    },
                     x: { display: true }
                 }
             }
         });
 
-        // Quality Issues Donut
+        // Review-Based Quality Issues (Data that CAN come from reviews)
         const qualityCtx = document.getElementById('qualityChart').getContext('2d');
         new Chart(qualityCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Taste Issues', 'Safety Concerns', 'Value Issues', 'Packaging'],
+                labels: ['Taste Issues', 'Texture Problems', 'Portion Size', 'Value Concerns'],
                 datasets: [{
-                    data: [87, 73, 68, 45],
+                    label: '% of Reviews Mentioning',
+                    data: [89, 67, 45, 52],
                     backgroundColor: ['#e74c3c', '#c0392b', '#f39c12', '#e67e22'],
-                    borderWidth: 0
+                    borderWidth: 2,
+                    borderColor: '#fff'
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { position: 'bottom', labels: { padding: 8 } }
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { 
+                            padding: 8,
+                            fontSize: 8
+                        } 
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.label + ': ' + context.parsed + '%';
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -396,21 +425,36 @@
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { 
+                        display: true,
+                        position: 'bottom',
+                        labels: { fontSize: 8 }
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: true, max: 35 }
+                    y: { 
+                        beginAtZero: true, 
+                        max: 35,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
                 }
             }
         });
 
-        // Consumer Behavior Impact
+        // Purchase Intent from Reviews (Data that CAN come from reviews)
         const behaviorCtx = document.getElementById('behaviorChart').getContext('2d');
         new Chart(behaviorCtx, {
-            type: 'horizontalBar',
+            type: 'bar',
             data: {
-                labels: ['Stopped Buying', 'Switched Brands', 'Negative Reviews', 'Won\'t Recommend'],
+                labels: ['Won\'t Repurchase', 'Would Not Recommend', 'Trying Alternatives', 'Price Too High'],
                 datasets: [{
-                    data: [91, 68, 85, 79],
+                    label: '% Negative Sentiment',
+                    data: [78, 71, 65, 43],
                     backgroundColor: ['#e74c3c', '#f39c12', '#e67e22', '#d35400'],
                     borderRadius: 4
                 }]
@@ -419,37 +463,71 @@
                 indexAxis: 'y',
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { 
+                        display: true,
+                        position: 'bottom',
+                        labels: { fontSize: 8 }
+                    }
+                },
                 scales: {
-                    x: { beginAtZero: true, max: 100 }
+                    x: { 
+                        beginAtZero: true, 
+                        max: 100,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
                 }
             }
         });
 
-        // Safety Recalls Timeline
-        const recallCtx = document.getElementById('recallChart').getContext('2d');
-        new Chart(recallCtx, {
-            type: 'scatter',
+        // Review Sentiment Trend Over Time
+        const sentimentTrendCtx = document.getElementById('sentimentTrendChart').getContext('2d');
+        new Chart(sentimentTrendCtx, {
+            type: 'line',
             data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
                 datasets: [{
-                    label: 'Major Recalls',
-                    data: [
-                        {x: 2020, y: 1, r: 15},
-                        {x: 2022, y: 2, r: 25},
-                        {x: 2025, y: 3, r: 20}
-                    ],
-                    backgroundColor: 'rgba(231, 76, 60, 0.6)',
+                    label: 'Positive Reviews %',
+                    data: [45, 38, 32, 28, 22, 17],
                     borderColor: '#e74c3c',
-                    borderWidth: 2
+                    backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }, {
+                    label: 'Negative Reviews %',
+                    data: [35, 42, 48, 52, 58, 62],
+                    borderColor: '#c0392b',
+                    backgroundColor: 'rgba(192, 57, 43, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: {
+                    legend: { 
+                        display: true,
+                        position: 'bottom',
+                        labels: { fontSize: 8 }
+                    }
+                },
                 scales: {
-                    x: { min: 2019, max: 2026, title: { display: true, text: 'Year' } },
-                    y: { min: 0, max: 4, title: { display: true, text: 'Recall Severity' } }
+                    y: { 
+                        beginAtZero: true, 
+                        max: 70,
+                        ticks: {
+                            callback: function(value) {
+                                return value + '%';
+                            }
+                        }
+                    }
                 }
             }
         });
@@ -467,15 +545,31 @@
                     backgroundColor: 'rgba(39, 174, 96, 0.1)',
                     borderWidth: 3,
                     fill: true,
-                    tension: 0.4
+                    tension: 0.4,
+                    pointBackgroundColor: '#27ae60',
+                    pointRadius: 3
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                plugins: { 
+                    legend: { 
+                        display: true,
+                        position: 'bottom',
+                        labels: { fontSize: 8 }
+                    }
+                },
                 scales: {
-                    y: { beginAtZero: false, min: 55 }
+                    y: { 
+                        beginAtZero: false, 
+                        min: 55,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value + 'B';
+                            }
+                        }
+                    }
                 }
             }
         });
