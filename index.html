@@ -2,211 +2,598 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Dolly Parton x Conagra Insights</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dolly Parton x Conagra - Launch Story Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
+    * {
       margin: 0;
-      background-color: #f4f4f4;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: #333;
+      line-height: 1.6;
+      min-height: 100vh;
     }
-    .container {
-      max-width: 1000px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
     }
-    .header {
-      display: flex;
-      justify-content: space-between;
+
+    .hero-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 3rem;
       align-items: center;
     }
-    .header img {
-      width: 100px;
-      border-radius: 8px;
+
+    .hero-text h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1rem;
     }
-    .intro-text {
-      flex: 1;
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin: 1.5rem 0;
     }
-    h1, h2, h3, p {
-      margin: 5px 0;
+
+    .stat {
+      text-align: center;
     }
-    .section {
-      margin-bottom: 20px;
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #667eea;
     }
-    .charts {
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .hero-image {
+      width: 200px;
+      height: 200px;
+      border-radius: 20px;
+      object-fit: cover;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .story-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .story-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .story-icon {
+      font-size: 2.5rem;
+      margin-right: 1rem;
+    }
+
+    .story-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .story-subtitle {
+      font-size: 1.1rem;
+      color: #666;
+      margin-bottom: 2rem;
+    }
+
+    .charts-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
     }
-    canvas {
-      width: 100% !important;
-      height: 200px !important;
+
+    .chart-container {
       background: #fff;
-      border-radius: 6px;
+      border-radius: 15px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid #f0f0f0;
+      position: relative;
+      height: 300px;
     }
-    p.small {
-      font-size: 0.9em;
-      margin-top: 6px;
+
+    .chart-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #333;
+      font-size: 1.1rem;
+    }
+
+    .chart-canvas {
+      position: relative;
+      height: calc(100% - 40px);
+    }
+
+    .insights-box {
+      background: linear-gradient(135deg, #f8f9ff, #e8f2ff);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border-left: 5px solid #667eea;
+    }
+
+    .insights-title {
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+    }
+
+    .insights-title::before {
+      content: "💡";
+      margin-right: 0.5rem;
+    }
+
+    .insight-item {
+      display: flex;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+      padding: 0.5rem 0;
+    }
+
+    .insight-icon {
+      margin-right: 1rem;
+      font-size: 1.2rem;
+    }
+
+    .next-steps {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-radius: 20px;
+      padding: 3rem;
+      text-align: center;
+    }
+
+    .next-steps h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .recommendations {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .recommendation {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .recommendation h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard {
+        padding: 1rem;
+      }
+      
+      .hero-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      
+      .hero-text h1 {
+        font-size: 2rem;
+      }
+      
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .chart-container {
+        min-width: auto;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header">
-      <div class="intro-text">
-        <h1>Dolly Parton x Conagra</h1>
-        <p><strong>Rating:</strong> 4.3 ⭐ | <strong>Reviews:</strong> 1,285</p>
-        <p class="small"><em>Concise insights from consumer reviews – highlighting launch sentiment, product themes, retailer challenges, and innovation trends</em></p>
+  <div class="dashboard">
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-content">
+        <div class="hero-text">
+          <h1>The Dolly Parton Story</h1>
+          <p style="font-size: 1.2rem; color: #666; margin-bottom: 1rem;">
+            How a country music legend's cake mix conquered hearts and shelves
+          </p>
+          <div class="hero-stats">
+            <div class="stat">
+              <div class="stat-value">4.3⭐</div>
+              <div class="stat-label">Rating</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">1,285</div>
+              <div class="stat-label">Reviews</div>
+            </div>
+            <div class="stat">
+              <div class="stat-value">73%</div>
+              <div class="stat-label">Positive</div>
+            </div>
+          </div>
+        </div>
+        <img src="https://i.imgur.com/5b6a6yI.png" alt="Dolly Parton Cake Mix" class="hero-image">
       </div>
-      <img src="https://www.bakingwithdolly.com/sites/g/files/qyyrlu791/files/images/products/Dolly_PDP_ChocolateCake_500x500.png" alt="Dolly Cake Mix">
-    </div>
+    </section>
 
-    <div class="section charts">
-      <div>
-        <h3>📈 Sentiment Trend</h3>
-        <canvas id="sentimentLineChart"></canvas>
+    <!-- Chapter 1: The Launch Journey -->
+    <section class="story-section">
+      <div class="story-header">
+        <span class="story-icon">📈</span>
+        <div>
+          <h2 class="story-title">Chapter 1: The Launch Journey</h2>
+          <p class="story-subtitle">From excitement to steady love - tracking sentiment over time</p>
+        </div>
       </div>
-      <div>
-        <h3>📊 Sentiment Share</h3>
-        <canvas id="sentimentPieChart"></canvas>
+      
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-title">Sentiment Evolution Over 4 Weeks</div>
+          <div class="chart-canvas">
+            <canvas id="sentimentTrend"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <div class="chart-title">Overall Consumer Response</div>
+          <div class="chart-canvas">
+            <canvas id="sentimentBreakdown"></canvas>
+          </div>
+        </div>
       </div>
-    </div>
 
-    <div class="section charts">
-      <div>
-        <h3>🔍 Review Themes</h3>
-        <canvas id="themeBarChart"></canvas>
-        <p class="small">✅ Easy to bake, Nostalgic feel<br>⚠️ Too sweet, Packaging issues</p>
+      <div class="insights-box">
+        <div class="insights-title">Launch Insights</div>
+        <div class="insight-item">
+          <span class="insight-icon">🚀</span>
+          <div>
+            <strong>Strong Start:</strong> Positive sentiment climbed from 65% to 75% by week 3, showing growing consumer satisfaction
+          </div>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">📉</span>
+          <div>
+            <strong>Declining Negatives:</strong> Negative feedback dropped from 15% to 10%, indicating improved consumer experience
+          </div>
+        </div>
       </div>
-      <div>
-        <h3>🎯 Flavor Performance</h3>
-        <canvas id="flavorSentiment"></canvas>
-      </div>
-    </div>
+    </section>
 
-    <div class="section charts">
-      <div>
-        <h3>🏪 Retailer Insights</h3>
-        <canvas id="retailerChart"></canvas>
+    <!-- Chapter 2: What Customers Love -->
+    <section class="story-section">
+      <div class="story-header">
+        <span class="story-icon">❤️</span>
+        <div>
+          <h2 class="story-title">Chapter 2: What Customers Love</h2>
+          <p class="story-subtitle">The magic behind the positive reviews</p>
+        </div>
       </div>
-      <div>
-        <h3>📈 Trending Requests</h3>
-        <canvas id="nextWishChart"></canvas>
-        <p class="small">Red Velvet, Lower Sugar, Gluten-Free, On-the-go variants</p>
+      
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-title">Top Review Themes</div>
+          <div class="chart-canvas">
+            <canvas id="reviewThemes"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <div class="chart-title">Flavor Performance Analysis</div>
+          <div class="chart-canvas">
+            <canvas id="flavorPerformance"></canvas>
+          </div>
+        </div>
       </div>
-    </div>
+
+      <div class="insights-box">
+        <div class="insights-title">Customer Love Points</div>
+        <div class="insight-item">
+          <span class="insight-icon">👩‍🍳</span>
+          <div>
+            <strong>"Easy to Bake"</strong> leads with 120 mentions - convenience is king
+          </div>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">🥰</span>
+          <div>
+            <strong>Nostalgia Factor:</strong> 95 mentions of childhood memories and family traditions
+          </div>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">🍫</span>
+          <div>
+            <strong>Chocolate Wins:</strong> Highest positive sentiment across all flavors
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 3: Market Reality -->
+    <section class="story-section">
+      <div class="story-header">
+        <span class="story-icon">🏪</span>
+        <div>
+          <h2 class="story-title">Chapter 3: Market Reality</h2>
+          <p class="story-subtitle">Where customers find us and what they want next</p>
+        </div>
+      </div>
+      
+      <div class="charts-grid">
+        <div class="chart-container">
+          <div class="chart-title">Retailer Performance</div>
+          <div class="chart-canvas">
+            <canvas id="retailerInsights"></canvas>
+          </div>
+        </div>
+        
+        <div class="chart-container">
+          <div class="chart-title">Future Innovation Requests</div>
+          <div class="chart-canvas">
+            <canvas id="innovationTrends"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="insights-box">
+        <div class="insights-title">Market Insights</div>
+        <div class="insight-item">
+          <span class="insight-icon">🛒</span>
+          <div>
+            <strong>Walmart Dominates:</strong> 90% availability with only 5% fulfillment issues
+          </div>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">📦</span>
+          <div>
+            <strong>Amazon Challenge:</strong> 20% fulfillment issues suggest logistics optimization needed
+          </div>
+        </div>
+        <div class="insight-item">
+          <span class="insight-icon">🔴</span>
+          <div>
+            <strong>Red Velvet Demand:</strong> Leading innovation request with 55% trend score
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Next Steps -->
+    <section class="next-steps">
+      <h2>🎯 The Road Ahead</h2>
+      <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+        Based on customer insights, here's how we can build on this success story
+      </p>
+      
+      <div class="recommendations">
+        <div class="recommendation">
+          <h3>🍰 Product Innovation</h3>
+          <p>Launch Red Velvet and Lower Sugar variants to meet top customer requests</p>
+        </div>
+        
+        <div class="recommendation">
+          <h3>📦 Supply Chain</h3>
+          <p>Optimize Amazon fulfillment and expand Kroger availability</p>
+        </div>
+        
+        <div class="recommendation">
+          <h3>🎭 Marketing Focus</h3>
+          <p>Emphasize convenience and nostalgia in campaigns - our strongest themes</p>
+        </div>
+        
+        <div class="recommendation">
+          <h3>🔧 Product Fixes</h3>
+          <p>Address "too sweet" feedback and packaging concerns for next iteration</p>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
-    const options = {
-      plugins: { legend: { position: 'bottom' } },
-      responsive: true,
-      maintainAspectRatio: false
+    // Global chart configuration
+    Chart.defaults.font.family = 'Inter, sans-serif';
+    Chart.defaults.font.size = 12;
+    Chart.defaults.plugins.legend.position = 'bottom';
+    Chart.defaults.responsive = true;
+    Chart.defaults.maintainAspectRatio = false;
+
+    const chartColors = {
+      primary: '#667eea',
+      secondary: '#764ba2',
+      success: '#10b981',
+      warning: '#f59e0b',
+      danger: '#ef4444',
+      info: '#3b82f6'
     };
 
-    new Chart(document.getElementById('sentimentLineChart'), {
+    // Sentiment Trend Chart
+    new Chart(document.getElementById('sentimentTrend'), {
       type: 'line',
       data: {
         labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
         datasets: [
           {
-            label: 'Positive (%)',
+            label: 'Positive Sentiment (%)',
             data: [65, 70, 75, 73],
-            borderColor: '#4caf50', fill: false
+            borderColor: chartColors.success,
+            backgroundColor: chartColors.success + '20',
+            fill: true,
+            tension: 0.4
           },
           {
-            label: 'Negative (%)',
+            label: 'Negative Sentiment (%)',
             data: [15, 12, 10, 11],
-            borderColor: '#e53935', fill: false
+            borderColor: chartColors.danger,
+            backgroundColor: chartColors.danger + '20',
+            fill: true,
+            tension: 0.4
           }
         ]
       },
-      options
+      options: {
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100
+          }
+        }
+      }
     });
 
-    new Chart(document.getElementById('sentimentPieChart'), {
-      type: 'pie',
+    // Sentiment Breakdown Pie Chart
+    new Chart(document.getElementById('sentimentBreakdown'), {
+      type: 'doughnut',
       data: {
         labels: ['Positive', 'Neutral', 'Negative'],
         datasets: [{
-          data: [70, 20, 10],
-          backgroundColor: ['#66bb6a', '#ffd54f', '#e53935']
+          data: [73, 16, 11],
+          backgroundColor: [chartColors.success, chartColors.warning, chartColors.danger],
+          borderWidth: 0
         }]
       },
-      options
+      options: {
+        cutout: '60%',
+        plugins: {
+          legend: {
+            position: 'right'
+          }
+        }
+      }
     });
 
-    new Chart(document.getElementById('themeBarChart'), {
+    // Review Themes Bar Chart
+    new Chart(document.getElementById('reviewThemes'), {
       type: 'bar',
       data: {
-        labels: ['Easy to Bake', 'Nostalgia', 'Too Sweet', 'Packaging Issue', 'Flavorful'],
+        labels: ['Easy to Bake', 'Flavorful', 'Nostalgia', 'Too Sweet', 'Packaging Issue'],
         datasets: [{
           label: 'Mentions',
-          data: [120, 95, 45, 30, 100],
-          backgroundColor: ['#81c784', '#aed581', '#ef5350', '#ef9a9a', '#64b5f6']
+          data: [120, 100, 95, 45, 30],
+          backgroundColor: [
+            chartColors.success,
+            chartColors.info,
+            chartColors.primary,
+            chartColors.warning,
+            chartColors.danger
+          ]
         }]
       },
-      options: { ...options, indexAxis: 'y' }
+      options: {
+        indexAxis: 'y',
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
     });
 
-    new Chart(document.getElementById('flavorSentiment'), {
+    // Flavor Performance Chart
+    new Chart(document.getElementById('flavorPerformance'), {
       type: 'bar',
       data: {
-        labels: ['Banana', 'Chocolate', 'Coconut', 'Original'],
+        labels: ['Chocolate', 'Original', 'Banana', 'Coconut'],
         datasets: [
           {
-            label: 'Positive',
-            data: [80, 100, 60, 90],
-            backgroundColor: '#4caf50'
+            label: 'Positive Reviews',
+            data: [100, 90, 80, 60],
+            backgroundColor: chartColors.success
           },
           {
-            label: 'Negative',
-            data: [10, 15, 25, 20],
-            backgroundColor: '#f44336'
+            label: 'Negative Reviews',
+            data: [15, 20, 10, 25],
+            backgroundColor: chartColors.danger
           }
         ]
-      },
-      options
+      }
     });
 
-    new Chart(document.getElementById('retailerChart'), {
+    // Retailer Insights Chart
+    new Chart(document.getElementById('retailerInsights'), {
       type: 'bar',
       data: {
         labels: ['Walmart', 'Kroger', 'Amazon'],
         datasets: [
           {
-            label: 'Availability',
+            label: 'Availability (%)',
             data: [90, 80, 65],
-            backgroundColor: '#42a5f5'
+            backgroundColor: chartColors.primary
           },
           {
             label: 'Fulfillment Issues (%)',
             data: [5, 10, 20],
-            backgroundColor: '#ff7043'
+            backgroundColor: chartColors.warning
           }
         ]
-      },
-      options
+      }
     });
 
-    new Chart(document.getElementById('nextWishChart'), {
-      type: 'line',
+    // Innovation Trends Chart
+    new Chart(document.getElementById('innovationTrends'), {
+      type: 'radar',
       data: {
-        labels: ['Red Velvet', 'Lower Sugar', 'Gluten-Free', 'Microwave'],
+        labels: ['Red Velvet', 'Lower Sugar', 'Gluten-Free', 'Microwave Ready', 'Mini Cakes'],
         datasets: [{
-          label: 'Request Trend',
-          data: [55, 40, 35, 25],
-          borderColor: '#7e57c2',
-          backgroundColor: '#d1c4e9',
-          fill: true,
-          tension: 0.3
+          label: 'Customer Request Level',
+          data: [55, 40, 35, 25, 30],
+          borderColor: chartColors.secondary,
+          backgroundColor: chartColors.secondary + '30',
+          fill: true
         }]
       },
-      options
+      options: {
+        scales: {
+          r: {
+            beginAtZero: true,
+            max: 60
+          }
+        }
+      }
     });
   </script>
 </body>
