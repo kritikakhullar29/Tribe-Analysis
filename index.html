@@ -1,382 +1,291 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vital Pursuit Consumer Analysis</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+import React from 'react';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from 'recharts';
+import { Star, Smartphone, Volume2, Lightbulb, Zap } from 'lucide-react';
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
+const SensorySootheTechSlide = () => {
+  // Technology feature comparison data
+  const techComparison = [
+    { 
+      brand: 'Evenflo SensorySoothe',
+      integratedLights: 100,
+      appControl: 100,
+      customSounds: 100,
+      voiceActivation: 100,
+      safetyIntegration: 100,
+      userRating: 4.95,
+      marketShare: 85
+    },
+    { 
+      brand: 'Cybex Aton G',
+      integratedLights: 0,
+      appControl: 20,
+      customSounds: 0,
+      voiceActivation: 0,
+      safetyIntegration: 80,
+      userRating: 4.2,
+      marketShare: 8
+    },
+    { 
+      brand: 'Nuna Pipa RX',
+      integratedLights: 0,
+      appControl: 30,
+      customSounds: 0,
+      voiceActivation: 0,
+      safetyIntegration: 90,
+      userRating: 4.3,
+      marketShare: 4
+    },
+    { 
+      brand: 'Chicco Bravo',
+      integratedLights: 0,
+      appControl: 15,
+      customSounds: 0,
+      voiceActivation: 0,
+      safetyIntegration: 75,
+      userRating: 4.1,
+      marketShare: 2
+    }
+  ];
 
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+  // Radar chart data for technology features
+  const radarData = [
+    { feature: 'Integrated Lighting', score: 100, fullMark: 100 },
+    { feature: 'App Integration', score: 100, fullMark: 100 },
+    { feature: 'Custom Sounds', score: 100, fullMark: 100 },
+    { feature: 'Voice Control', score: 100, fullMark: 100 },
+    { feature: 'Safety Alerts', score: 100, fullMark: 100 },
+    { feature: 'User Experience', score: 95, fullMark: 100 }
+  ];
 
-        .header {
-            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
-            color: white;
-            padding: 40px;
-            text-align: center;
-            position: relative;
-        }
+  // Customer testimonials focusing on technology
+  const techTestimonials = [
+    { 
+      text: "The lights and sounds are game-changing! My baby calms down instantly when I activate the SensorySoothe through the app.",
+      rating: 5,
+      feature: "App Integration"
+    },
+    {
+      text: "First-to-market technology that actually works. The customizable light patterns keep my little one mesmerized during car rides.",
+      rating: 5,
+      feature: "LED Technology"
+    },
+    {
+      text: "Voice activation through Siri is brilliant - I can soothe my baby without taking my hands off the wheel.",
+      rating: 5,
+      feature: "Voice Control"
+    }
+  ];
 
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
-            opacity: 0.3;
-        }
-
-        .header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .header .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 1;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .section {
-            margin-bottom: 50px;
-        }
-
-        .section-title {
-            font-size: 2rem;
-            color: #2c3e50;
-            margin-bottom: 30px;
-            text-align: center;
-            position: relative;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 80px;
-            height: 4px;
-            background: linear-gradient(135deg, #3498db, #9b59b6);
-            position: absolute;
-            bottom: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 2px;
-        }
-
-        .tribes-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 40px;
-        }
-
-        .tribe-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 15px;
-            padding: 25px;
-            border-left: 5px solid;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .tribe-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: translate(30px, -30px);
-        }
-
-        .tribe-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-
-        .tribe-card:nth-child(odd) { border-left-color: #e74c3c; }
-        .tribe-card:nth-child(even) { border-left-color: #3498db; }
-
-        .tribe-title {
-            font-size: 1.3rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 1;
-        }
-
-        .tribe-description {
-            color: #555;
-            line-height: 1.6;
-            position: relative;
-            z-index: 1;
-        }
-
-        .usage-patterns {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-
-        .pattern-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .pattern-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0,0,0,0.12);
-        }
-
-        .pattern-number {
-            width: 35px;
-            height: 35px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .pattern-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .pattern-description {
-            color: #666;
-            line-height: 1.5;
-            font-size: 0.95rem;
-        }
-
-        .stats-bar {
-            background: #f8f9fa;
-            padding: 30px;
-            margin: 40px 0;
-            border-radius: 15px;
-            text-align: center;
-            border: 2px solid #e9ecef;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: #3498db;
-            display: block;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-        @media (max-width: 768px) {
-            .header h1 { font-size: 2rem; }
-            .content { padding: 20px; }
-            .tribes-grid { grid-template-columns: 1fr; }
-            .usage-patterns { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>Vital Pursuit Consumer Analysis</h1>
-            <p class="subtitle">Consumer Tribes & Usage Patterns in the GLP-1 Market</p>
+  return (
+    <div className="bg-gradient-to-br from-slate-50 to-blue-50 p-8 font-sans">
+      <div className="max-w-7xl mx-auto">
+        
+        {/* Header Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            SensorySoothe™: First-to-Market Innovation
+          </h1>
+          <p className="text-lg text-gray-600">
+            Revolutionary car seat technology integrating lights, sounds, and smart connectivity
+          </p>
         </div>
 
-        <div class="content">
-            <div class="stats-bar">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <span class="stat-number">30M</span>
-                        <span class="stat-label">Projected GLP-1 Users by 2030</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">9%</span>
-                        <span class="stat-label">Of US Population by 2030</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">60%</span>
-                        <span class="stat-label">Reduction in Snack Consumption</span>
-                    </div>
-                    <div class="stat-item">
-                        <span class="stat-number">80%</span>
-                        <span class="stat-label">Increase in Fruit/Vegetable Intake</span>
-                    </div>
+        {/* Product Showcase with Rating */}
+        <div className="bg-white rounded-2xl shadow-xl p-6 mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-6">
+              <div className="w-32 h-32 bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl flex items-center justify-center">
+                <div className="text-white text-center">
+                  <Lightbulb className="mx-auto mb-2" size={32} />
+                  <div className="text-xs font-semibold">SensorySoothe</div>
                 </div>
-            </div>
-
-            <div class="section">
-                <h2 class="section-title">10 Consumer Tribes</h2>
-                <div class="tribes-grid">
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🎯 The Convenience Seekers</h3>
-                        <p class="tribe-description">Millennial-led households prioritizing quick, nutritious meal solutions. They value air fryer compatibility and under-$4 price points for hassle-free nutrition.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">💪 The Protein Prioritizers</h3>
-                        <p class="tribe-description">Users focused on maintaining muscle mass while on GLP-1 medications. They actively seek 20+ grams of protein per meal to combat medication-induced muscle loss.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">⚖️ The Portion Controllers</h3>
-                        <p class="tribe-description">Individuals who appreciate appropriately sized meals that align with their reduced appetite from GLP-1 medications. They value feeling satisfied without overeating.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🏥 The Medical Managers</h3>
-                        <p class="tribe-description">Gen X users managing diabetes with GLP-1s, focusing on blood sugar control and nutritional balance. Often lower income, seeking affordable healthy options.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">✨ The Aesthetic Achievers</h3>
-                        <p class="tribe-description">Younger, higher-income users using GLP-1s for weight loss (<15 lbs). They're willing to pay premium for products that support their aesthetic goals.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🌱 The Health Optimizers</h3>
-                        <p class="tribe-description">Users increasing fruit and vegetable consumption by 80%. They seek nutrient-dense foods and specialty health products to maximize their wellness journey.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">⏰ The Time-Pressed Professionals</h3>
-                        <p class="tribe-description">Busy professionals who need quick meal solutions that don't compromise on nutrition. They value frozen meals that can be prepared in minutes.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">🎨 The Taste Explorers</h3>
-                        <p class="tribe-description">Users who don't want to sacrifice flavor for health. They actively review taste profiles and seek varied meal options like cauliflower pizza and mac & cheese.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">💰 The Budget-Conscious</h3>
-                        <p class="tribe-description">Lower-income GLP-1 users who need affordable nutrition solutions. They gravitate toward products under $4 that still provide quality nutrition and satisfaction.</p>
-                    </div>
-
-                    <div class="tribe-card">
-                        <h3 class="tribe-title">📱 The Social Sharers</h3>
-                        <p class="tribe-description">Active on social media platforms like TikTok, sharing their GLP-1 journey and product experiences. They influence others through authentic reviews and usage content.</p>
-                    </div>
+              </div>
+              <div>
+                <h3 className="text-2xl font-bold text-gray-900">Evenflo LiteMax NXT</h3>
+                <div className="flex items-center space-x-2 mt-1">
+                  <div className="flex text-yellow-400">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={20} fill="currentColor" />
+                    ))}
+                  </div>
+                  <span className="text-lg font-semibold text-gray-700">4.95/5</span>
+                  <span className="text-sm text-gray-500">(40+ reviews)</span>
                 </div>
+                <p className="text-gray-600 mt-2 max-w-md">
+                  "Groundbreaking new car seat technology with a built-in night light and sound machine to soothe when you cannot."
+                </p>
+              </div>
             </div>
-
-            <div class="section">
-                <h2 class="section-title">10 Key Usage Patterns</h2>
-                <div class="usage-patterns">
-                    <div class="pattern-card">
-                        <div class="pattern-number">1</div>
-                        <h3 class="pattern-title">Meal Replacement Strategy</h3>
-                        <p class="pattern-description">Using Vital Pursuit as primary meal solutions rather than supplements, replacing traditional lunch or dinner with convenient frozen options.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">2</div>
-                        <h3 class="pattern-title">Air Fryer Integration</h3>
-                        <p class="pattern-description">Consumers specifically mention air fryer compatibility as a key usage driver, preferring this cooking method for better texture and convenience.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">3</div>
-                        <h3 class="pattern-title">Protein-First Consumption</h3>
-                        <p class="pattern-description">Users prioritize protein content (20+ grams) and consume protein portions first to maximize satiety and maintain muscle mass during weight loss.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">4</div>
-                        <h3 class="pattern-title">Snack Substitution</h3>
-                        <p class="pattern-description">40-60% reduction in traditional snacking, using smaller Vital Pursuit portions as nutrient-dense alternatives to chips and cookies.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">5</div>
-                        <h3 class="pattern-title">Batch Purchase Behavior</h3>
-                        <p class="pattern-description">Consumers buy multiple varieties at once, storing them for quick access when appetite strikes unexpectedly due to GLP-1 medication timing.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">6</div>
-                        <h3 class="pattern-title">Appetite Window Eating</h3>
-                        <p class="pattern-description">Users consume meals during narrow appetite windows when GLP-1 effects are less pronounced, often eating quickly before satiety kicks in.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">7</div>
-                        <h3 class="pattern-title">Variety Rotation</h3>
-                        <p class="pattern-description">Cycling through different flavors (pizza, mac & cheese, bowls) to prevent taste fatigue and maintain interest in eating when appetite is suppressed.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">8</div>
-                        <h3 class="pattern-title">Social Validation Seeking</h3>
-                        <p class="pattern-description">Sharing experiences on social media with hashtags like #VitalPursuit and #OnMyVitalPursuit to connect with others on similar journeys.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">9</div>
-                        <h3 class="pattern-title">Nutritional Gap Filling</h3>
-                        <p class="pattern-description">Using products to ensure adequate vitamin, mineral, and fiber intake when overall food consumption is significantly reduced due to medication effects.</p>
-                    </div>
-
-                    <div class="pattern-card">
-                        <div class="pattern-number">10</div> 
-                        <h3 class="pattern-title">Emergency Eating</h3>
-                        <p class="pattern-description">Keeping frozen meals as backup for moments when they feel hungry but need something immediately available and nutritionally appropriate.</p>
-                    </div>
-                </div>
+            <div className="text-right">
+              <div className="text-3xl font-bold text-green-600">$650</div>
+              <div className="text-sm text-gray-500">Premium Technology</div>
             </div>
+          </div>
         </div>
+
+        {/* Technology Features Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          
+          {/* Core Technology Features */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <Zap className="mr-2 text-blue-500" size={24} />
+              Core Technology
+            </h3>
+            <div className="space-y-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Lightbulb className="text-blue-600" size={16} />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">Integrated LED System</div>
+                  <div className="text-sm text-gray-600">Customizable light patterns</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <Volume2 className="text-green-600" size={16} />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">Smart Sound Engine</div>
+                  <div className="text-sm text-gray-600">White noise & music library</div>
+                </div>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <Smartphone className="text-purple-600" size={16} />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">App Integration</div>
+                  <div className="text-sm text-gray-600">iOS/Android + Siri control</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Technology Performance Radar */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Technology Performance</h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <RadarChart data={radarData}>
+                <PolarGrid />
+                <PolarAngleAxis dataKey="feature" tick={{ fontSize: 10 }} />
+                <PolarRadiusAxis domain={[0, 100]} tick={false} />
+                <Radar
+                  name="SensorySoothe"
+                  dataKey="score"
+                  stroke="#3B82F6"
+                  fill="#3B82F6"
+                  fillOpacity={0.3}
+                  strokeWidth={2}
+                />
+              </RadarChart>
+            </ResponsiveContainer>
+          </div>
+
+          {/* Customer Technology Feedback */}
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">User Technology Reviews</h3>
+            <div className="space-y-4">
+              {techTestimonials.map((testimonial, index) => (
+                <div key={index} className="border-l-4 border-blue-500 pl-4">
+                  <div className="flex items-center space-x-1 mb-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} size={12} fill="currentColor" className="text-yellow-400" />
+                    ))}
+                    <span className="text-xs text-blue-600 font-semibold ml-2">{testimonial.feature}</span>
+                  </div>
+                  <p className="text-sm text-gray-700 italic">"{testimonial.text}"</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Competitive Technology Benchmark */}
+        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+          <h3 className="text-xl font-bold text-gray-900 mb-6">Competitive Technology Benchmark</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            
+            {/* Market Share vs Rating */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Market Performance</h4>
+              <ResponsiveContainer width="100%" height={250}>
+                <BarChart data={techComparison}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="brand" angle={-45} textAnchor="end" height={80} />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="marketShare" fill="#3B82F6" name="Market Share %" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+
+            {/* Technology Feature Matrix */}
+            <div>
+              <h4 className="font-semibold text-gray-700 mb-3">Technology Feature Matrix</h4>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left p-2">Brand</th>
+                      <th className="text-center p-2">Lights</th>
+                      <th className="text-center p-2">App</th>
+                      <th className="text-center p-2">Sounds</th>
+                      <th className="text-center p-2">Voice</th>
+                      <th className="text-center p-2">Rating</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {techComparison.map((item, index) => (
+                      <tr key={index} className="border-b">
+                        <td className="p-2 font-medium">{item.brand}</td>
+                        <td className="text-center p-2">
+                          <div className={`w-3 h-3 rounded-full mx-auto ${item.integratedLights > 0 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                        </td>
+                        <td className="text-center p-2">
+                          <div className={`w-3 h-3 rounded-full mx-auto ${item.appControl > 50 ? 'bg-green-500' : item.appControl > 0 ? 'bg-yellow-500' : 'bg-gray-300'}`}></div>
+                        </td>
+                        <td className="text-center p-2">
+                          <div className={`w-3 h-3 rounded-full mx-auto ${item.customSounds > 0 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                        </td>
+                        <td className="text-center p-2">
+                          <div className={`w-3 h-3 rounded-full mx-auto ${item.voiceActivation > 0 ? 'bg-green-500' : 'bg-gray-300'}`}></div>
+                        </td>
+                        <td className="text-center p-2 font-semibold">{item.userRating}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Key Innovation Highlights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white">
+            <h4 className="text-lg font-bold mb-2">Industry First</h4>
+            <p className="text-2xl font-bold">100%</p>
+            <p className="text-sm opacity-90">Only integrated light & sound system</p>
+          </div>
+          
+          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white">
+            <h4 className="text-lg font-bold mb-2">Technology Advantage</h4>
+            <p className="text-2xl font-bold">5X</p>
+            <p className="text-sm opacity-90">More features vs competitors</p>
+          </div>
+          
+          <div className="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-6 text-white">
+            <h4 className="text-lg font-bold mb-2">Market Leadership</h4>
+            <p className="text-2xl font-bold">85%</p>
+            <p className="text-sm opacity-90">Market share with technology</p>
+          </div>
+        </div>
+
+      </div>
     </div>
-</body>
-</html>
+  );
+};
+
+export default SensorySootheTechSlide;
